@@ -6,9 +6,9 @@ find_package(catkin QUIET COMPONENTS
   roscpp
   geometry_msgs)
 
-IF(catkin_DIR)
-  add_subdirectory(ros_publisher)
-ENDIF()
+#IF(catkin_DIR)
+#  add_subdirectory(ros_publisher)
+#ENDIF()
 
 find_library(XDO_LIB xdo)
 if(XDO_LIB)

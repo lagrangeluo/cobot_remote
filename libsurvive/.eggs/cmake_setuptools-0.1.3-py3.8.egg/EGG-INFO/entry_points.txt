@@ -1,0 +1,2 @@
+[console_scripts]
+rename-wheel = cmake_setuptools.utils:rename_package_wheel_main

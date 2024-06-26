@@ -1,65 +1,12 @@
-# Linux
-.idea
-*.o
-*.so
-lib
-calibrate_client
-calibrate
-test
-simple_pose_test
-cmake-build-*
-survive
-survive-cli
-sensors-readout
-api_example
-build*
+/libsurvive/build
 
-# clangd cache
-.cache/
+**/__pycache__
+**/.vscode
 
-# Temp files
-*~
-*/\#*\#
-\#*\#
-
-# Tool output
-*.json
-*.config
-*.csv
-calinfo/
+# 忽略其他常见的构建文件和临时文件
 *.log
-*.png
-*.sage.py
-*.rec
-*.zip
-*.avi
-do_calib/*
+*.tmp
+*.swp
+*.swo
 
-# Windows specific
-*.dll
-*.exe
-obj/
-bin/
-x64/
-packages
-.vs/
-Debug/
-Release/
-*.VC.db
-*.user
-*.ipch
-*.tlog
-*.d
-build
 
-.options
-.zip
-.avi
-
-*/__pycache__
-*.pyc
-
-venv
-.eggs/
-dist/
-pysurvive.egg-info/
