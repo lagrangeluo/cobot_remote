@@ -44,7 +44,7 @@ struct ObjectPublishers {
         assert(so != 0);
         configPublisher = obj_n.advertise<std_msgs::String>("config", 1, true);
         joyPublisher = obj_n.advertise<sensor_msgs::Joy>("joy", 1);
-        imuPublisher = obj_n.advertise<sensor_msgs::Imu>("imu", 1);
+        imuPublisher = obj_n.advertise<sensor_msgs::Imu>("/imu/data", 1);
     }
 
     int joy_seq = 0, imu_seq = 0;

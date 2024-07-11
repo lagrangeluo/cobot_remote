@@ -7,12 +7,34 @@ add_compile_options(-std=c++14)
 ## 查找catkin依赖
 find_package(catkin REQUIRED COMPONENTS 
   roscpp
-  geometry_msgs tf
+  rospy
+  geometry_msgs 
+  tf
+  arm_control
+  message_generation
+  message_runtime
   )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
+# Generate messages in the 'msg' folder
+add_message_files(
+  FILES
+  joystick.msg
+)
+
+# Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+catkin_package(
+#  INCLUDE_DIRS include
+#  LIBRARIES survive_publisher
+CATKIN_DEPENDS message_runtime roscpp rospy std_msgs
+#  DEPENDS system_lib
+)
 ###########
 ## Build ##
 ###########
@@ -30,12 +52,6 @@ include_directories(
 
 link_directories(../libsurvive/build)
 
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES survive_publisher
-#  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
-)
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
@@ -61,6 +77,12 @@ target_link_libraries(${PROJECT_NAME}_node
 target_link_libraries(survive_ros_node
   ${catkin_LIBRARIES}
   )
+
+catkin_install_python(PROGRAMS
+  script/joystick.py
+
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark executables and/or libraries for installation
  install(TARGETS ${PROJECT_NAME}_node survive_ros_node

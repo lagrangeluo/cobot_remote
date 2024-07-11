@@ -1,0 +1,7 @@
+<launch>
+    <node name="rosserial_node" type="serial_node.py" pkg="rosserial_python" output="screen" respawn="true">
+        <param name = "port" type="string" value="tcp" />
+    </node>
+    <node name="joystick_publisher" type="joystick.py" pkg="survive_publisher" output="screen">
+    </node>
+</launch>

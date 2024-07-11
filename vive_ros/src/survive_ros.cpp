@@ -14,7 +14,7 @@ void survive_ros_node::init()
     nh.getParam("base_station_2", base_station_2);
 
     joy_sub = nh.subscribe("/libsurvive/LHR_F30CC195/joy",5,&survive_ros_node::joy_topic_callback,this);
-    
+    joystick_sub = nh.subscribe("/joystick",5,&survive_ros_node::joystick_callback,this);
     // init start flag
     start_teleop = false;
     
@@ -24,6 +24,9 @@ void survive_ros_node::init()
     tracker_static.header.frame_id = world_name;
     tracker_static.child_frame_id = teleop_base;
     tracker_static.transform.rotation.w = 1;
+    // broadcaster.sendTransform(tracker_static);
+
+    joint_pub = nh.advertise<arm_control::PosCmd>("/master2_pos_back",5);
 
 }
 void survive_ros_node::joy_topic_callback(const sensor_msgs::Joy::ConstPtr msg)
@@ -70,14 +73,25 @@ void survive_ros_node::joy_topic_callback(const sensor_msgs::Joy::ConstPtr msg)
     }
 }
 
+void survive_ros_node::joystick_callback(const survive_publisher::joystick::ConstPtr msg)
+{
+    if(msg->up_button == true && cmd.gripper < 5)
+    {
+        cmd.gripper += 0.1;
+    }
+    else if(msg->down_button == true && cmd.gripper > 0)
+    {
+        cmd.gripper -= 0.1;
+    }
+}
 void survive_ros_node::check_start_teleop()
 {
+    // pub tracker static tf
+    tracker_static.header.stamp = ros::Time::now();
+    broadcaster.sendTransform(tracker_static);
+
     if(start_teleop == true)
     {
-        // pub tracker static tf
-        tracker_static.header.stamp = ros::Time::now();
-        broadcaster.sendTransform(tracker_static);
-        
         tf::StampedTransform trans;
         try{
             listener.lookupTransform(teleop_base,tracker_left,ros::Time(0),trans);
@@ -85,11 +99,21 @@ void survive_ros_node::check_start_teleop()
             //                 trans.getOrigin().y(), trans.getOrigin().z());
                         
             // get r p y and only use y angle
-            double roll, pitch,yaw;
+            double roll,pitch,yaw;
             tf::Quaternion q = trans.getRotation();
             tf::Matrix3x3(q).getRPY(roll, pitch, yaw);
             // ROS_INFO("RPY: roll=%f, pitch=%f, yaw=%f",roll,pitch,yaw);
 
+            cmd.x = trans.getOrigin().x();
+            cmd.y = trans.getOrigin().y();
+            cmd.z = trans.getOrigin().z();
+            cmd.roll = roll;
+            cmd.pitch = pitch;
+            cmd.yaw = yaw;
+            // cmd.mode1 = 0;
+            // cmd.mode1 = 0;
+
+            joint_pub.publish(cmd);
         }
         catch(tf::TransformException &ex){
             ROS_ERROR("%s", ex.what());

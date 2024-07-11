@@ -1,13 +1,11 @@
 <launch>
+    <node name="vive_publisher" type="survive_publisher_node" pkg="survive_publisher" output="screen">
+    </node>
 
-<node name="vive_publisher" type="survive_publisher_node" pkg="survive_publisher" output="screen">
-</node>
-
-<node name="vive_ros_node" type="survive_ros_node" pkg="survive_publisher" output="screen">
-    <param name = "world_name" type="string" value="libsurvive_world" />
-    <param name = "tracker_left" type="string" value="LHR-F30CC195_imu" />
-    <param name = "tracker_right" type="string" value="" />
-    <param name = "teleop_base" type="string" value="tracker_base" />
-</node>
-
+    <node name="vive_ros_node" type="survive_ros_node" pkg="survive_publisher" output="screen">
+        <param name = "world_name" type="string" value="libsurvive_world" />
+        <param name = "tracker_left" type="string" value="LHR-F30CC195_imu" />
+        <param name = "tracker_right" type="string" value="" />
+        <param name = "teleop_base" type="string" value="tracker_base" />
+    </node>
 </launch>
