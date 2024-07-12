@@ -58,6 +58,7 @@ link_directories(../libsurvive/build)
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node src/main.cpp)
 add_executable(survive_ros_node src/survive_ros.cpp)
+add_executable(survive_publisher src/survive_publisher.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -77,6 +78,9 @@ target_link_libraries(${PROJECT_NAME}_node
 target_link_libraries(survive_ros_node
   ${catkin_LIBRARIES}
   )
+target_link_libraries(survive_publisher
+  ${catkin_LIBRARIES}
+  )
 
 catkin_install_python(PROGRAMS
   script/joystick.py
@@ -85,7 +89,7 @@ catkin_install_python(PROGRAMS
 )
 
 ## Mark executables and/or libraries for installation
- install(TARGETS ${PROJECT_NAME}_node survive_ros_node
+ install(TARGETS ${PROJECT_NAME}_node survive_ros_node survive_publisher
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

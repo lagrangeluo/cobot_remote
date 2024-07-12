@@ -29,6 +29,7 @@ void survive_ros_node::init()
     joint_pub = nh.advertise<arm_control::PosCmd>("/master2_pos_back",5);
 
 }
+
 void survive_ros_node::joy_topic_callback(const sensor_msgs::Joy::ConstPtr msg)
 {
     if(msg->buttons[3] == 0)
@@ -84,6 +85,7 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
         cmd.gripper -= 0.1;
     }
 }
+
 void survive_ros_node::check_start_teleop()
 {
     // pub tracker static tf

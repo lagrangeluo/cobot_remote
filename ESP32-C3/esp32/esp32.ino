@@ -16,12 +16,12 @@
 #define button_down 3
 #define CHANNEL     0
 
-// const char* ssid = "松灵";        // 设置Wi-Fi名称
-// const char* password = "agilex2024#";            // 设置Wi-Fi密码
+const char* ssid = "松灵";        // 设置Wi-Fi名称
+const char* password = "agilex2024#";            // 设置Wi-Fi密码
 // const char* ssid = "Navis3";        // 设置Wi-Fi名称
 // const char* password = "12345678";            // 设置Wi-Fi密码
-const char* ssid = "ESP32_Hotspot";        // 设置Wi-Fi名称
-const char* password = "12345678";            // 设置Wi-Fi密码
+// const char* ssid = "ESP32_Hotspot";        // 设置Wi-Fi名称
+// const char* password = "12345678";            // 设置Wi-Fi密码
 
 Freenove_ESP32_WS2812 strip = Freenove_ESP32_WS2812(LEDS_COUNT, LEDS_PIN, CHANNEL, TYPE_GRB);
 
@@ -30,9 +30,11 @@ Freenove_ESP32_WS2812 strip = Freenove_ESP32_WS2812(LEDS_COUNT, LEDS_PIN, CHANNE
 // AsyncWebSocket ws("/aloha");
 
 //ros
-// IPAddress server(10, 10, 96, 111);
+IPAddress server(10, 10, 96, 111);
+//IPAddress server(10, 10, 24, 12);
+
 // IPAddress server(192, 168, 1, 109);
-IPAddress server(192, 168, 1, 2);
+// IPAddress server(192, 168, 1, 2);
 
 uint16_t serverPort = 11411;
 char hello[13] = "hello world!";
