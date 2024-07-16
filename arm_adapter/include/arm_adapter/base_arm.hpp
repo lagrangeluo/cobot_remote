@@ -104,8 +104,8 @@ class ArmCommonInterface{
                 //标志位
                 tf2_start_flag = true;
 
-                ROS_INFO("Translation: x=%f, y=%f, z=%f", x, y, z);
-                ROS_INFO("Rotation: roll=%f, pitch=%f, yaw=%f", transform.roll, transform.pitch, transform.yaw);
+                // ROS_INFO("Translation: x=%f, y=%f, z=%f", x, y, z);
+                // ROS_INFO("Rotation: roll=%f, pitch=%f, yaw=%f", transform.roll, transform.pitch, transform.yaw);
             }
             catch (tf2::TransformException &ex)
             {

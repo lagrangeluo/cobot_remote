@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import asyncio
-import websockets
 import json
 import rospy
 from std_msgs.msg import String
@@ -18,6 +16,7 @@ class joystick_node:
         self.middle_value = rospy.get_param('middle_value', 2420)
         self.deadband = rospy.get_param('deadband',100)
         self.button_press_time = rospy.get_param('button_press_time',25)
+        self.button_single_press = rospy.get_param('button_single_press',8)
 
         # self.topic_pub = rospy.Publisher(self.topic_name, String, queue_size=10)
         self.esp32_sub = rospy.Subscriber(self.topic_name, String, self.esp32_json_callback)
@@ -73,10 +72,11 @@ class joystick_node:
 
                     if button == 0:
                         self.press_cnt[key] = 0
-                    if button == 1 and self.press_cnt[key] < self.button_press_time:
+                        self.press_dic[key] = False
+                    if button == 1 and self.press_cnt[key] < self.button_single_press:
                         self.press_cnt[key] += 1
-                    if self.press_cnt[key] == self.button_press_time:
-                        self.press_dic[key] = not press
+                    if self.press_cnt[key] == self.button_single_press:
+                        self.press_dic[key] = True
                         self.press_cnt[key] += 1
                 
                 if self.button_dic['up'] == 1 and self.button_dic['down'] == 1 and self.up_down_cnt<self.button_press_time:

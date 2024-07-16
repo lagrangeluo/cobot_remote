@@ -27,13 +27,13 @@ void arx_lite::publish_pose()
 
 void arx_lite::joystick_callback(const survive_publisher::joystick::ConstPtr msg)
 {
-    if(msg->up_button == true && cmd.gripper < 5)
+    if(msg->press_up == true && msg->press_down == false && cmd.gripper < 5)
     {
-        cmd.gripper += 0.1;
+        cmd.gripper += 0.2;
     }
-    else if(msg->down_button == true && cmd.gripper > 0)
+    else if(msg->press_down == true && msg->press_up == false && cmd.gripper > 0)
     {
-        cmd.gripper -= 0.1;
+        cmd.gripper -= 0.2;
     }
 }
 

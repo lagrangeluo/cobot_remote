@@ -35,7 +35,7 @@ class survive_ros_node
         std::string base_station_2;
 
         // 初始位置位置补偿
-        float base_x, base_y, base_z, base_roll, base_pitch, base_yaw;
+        double base_x, base_y, base_z, base_roll, base_pitch, base_yaw;
 
         // start flag from joy button
         bool start_teleop;

@@ -30,8 +30,8 @@ Freenove_ESP32_WS2812 strip = Freenove_ESP32_WS2812(LEDS_COUNT, LEDS_PIN, CHANNE
 // AsyncWebSocket ws("/aloha");
 
 //ros
-IPAddress server(10, 10, 96, 111);
-//IPAddress server(10, 10, 24, 12);
+// IPAddress server(10, 10, 96, 111);
+IPAddress server(10, 10, 24, 12);
 
 // IPAddress server(192, 168, 1, 109);
 // IPAddress server(192, 168, 1, 2);

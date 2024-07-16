@@ -12,9 +12,9 @@ void survive_ros_node::init()
     nh.getParam("/vive/teleop_base", teleop_base);
     nh.getParam("/vive/base_station_1", base_station_1);
     nh.getParam("/vive/base_station_2", base_station_2);
-    nh.getParam("/vive/base_x", tracker_static.transform.translation.x);
-    nh.getParam("/vive/base_y", tracker_static.transform.translation.y);
-    nh.getParam("/vive/base_z", tracker_static.transform.translation.z);
+    nh.getParam("/vive/base_x", base_x);
+    nh.getParam("/vive/base_y", base_y);
+    nh.getParam("/vive/base_z", base_z);
     nh.getParam("/vive/base_roll", base_roll);
     nh.getParam("/vive/base_pitch", base_pitch);
     nh.getParam("/vive/base_yaw", base_yaw);
@@ -56,17 +56,16 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
 
                 tf::Quaternion new_q;
                 new_q.setRPY(roll, pitch, yaw);
-                ROS_INFO("Tracker Base RPY: roll=%f, pitch=%f, yaw=%f", roll, pitch, yaw);
+                //ROS_INFO("Tracker Base RPY: roll=%f, pitch=%f, yaw=%f", roll, pitch, yaw);
                 
                 tracker_static.header.stamp = ros::Time::now();
-                tracker_static.transform.translation.x = trans.getOrigin().x() - base_x;
-                tracker_static.transform.translation.y = trans.getOrigin().y() - base_y;
+                tracker_static.transform.translation.x = trans.getOrigin().x() + base_x;
+                tracker_static.transform.translation.y = trans.getOrigin().y() + base_y;
                 tracker_static.transform.translation.z = trans.getOrigin().z() - base_z;
                 tracker_static.transform.rotation.x = new_q.x();
                 tracker_static.transform.rotation.y = new_q.y();
                 tracker_static.transform.rotation.z = new_q.z();
                 tracker_static.transform.rotation.w = new_q.w();
-
             }
             catch(tf::TransformException &ex){
                 ROS_ERROR("%s", ex.what());
@@ -80,12 +79,25 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
     }
     else
     {
-        // 暂停后从上次停止的地方恢复
-        base_x = tracker_static.transform.translation.x;
-        base_y = tracker_static.transform.translation.y;
-        base_z = tracker_static.transform.translation.z;
-
-        start_teleop = false;
+        if(start_teleop == true)
+        {
+            start_teleop = false;
+            //
+            tf::StampedTransform trans_left;
+            try{
+                listener.lookupTransform(teleop_base,tracker_left,ros::Time(0),trans_left);
+                // 暂停后从上次停止的地方恢复
+                base_x = trans_left.getOrigin().x();
+                base_y = trans_left.getOrigin().y();
+                base_z = trans_left.getOrigin().z();
+                ROS_INFO("base x: %f , y: %f , z: %f",base_x,base_y,base_z);
+            }
+            catch(tf::TransformException &ex){
+                ROS_ERROR("%s", ex.what());
+                start_teleop=true;
+                return;
+            }
+        }
     }
 }
 
