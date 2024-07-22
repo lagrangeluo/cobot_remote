@@ -9,9 +9,20 @@ vive:
     joystick_topic: "/joystick"
     cmd_topic_name: "/master2_pos_back"
 
-    base_x: 0.05
+    base_x: 0.03
     base_y: 0
-    base_z: 0.05
+    base_z: 0.03
     base_roll: 0
     base_pitch: 0
     base_yaw: 0
+
+    joint_num: 7
+
+    init_angle:
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0

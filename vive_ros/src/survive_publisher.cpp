@@ -36,7 +36,7 @@ void survive_ros_node::init()
 
 void survive_ros_node::joystick_callback(const survive_publisher::joystick::ConstPtr msg)
 {
-    //如果长按，更新tracker基座标
+    //如果长按两个按键，更新tracker基座标
     if(msg->press_up_dowm == true)
     {
         if(start_teleop == false)
@@ -98,6 +98,17 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
                 return;
             }
         }
+    }
+
+    //长按js按键，结束模式清除base xyz
+    if(msg->press_js == true)
+    {
+        ros::NodeHandle nh("~");
+
+        //重新获取base xyz
+        nh.getParam("/vive/base_x", base_x);
+        nh.getParam("/vive/base_y", base_y);
+        nh.getParam("/vive/base_z", base_z);
     }
 }
 

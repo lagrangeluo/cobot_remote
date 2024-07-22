@@ -23,13 +23,7 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
 }
 
 void setup() {
-  Serial.begin(115200);
-  // Serial.println("start init WiFi softAP");
   WiFi.softAP(ssid, password);
-
-  IPAddress IP = WiFi.softAPIP();
-  // Serial.print("AP IP address: ");
-  // Serial.println(IP);
 
   ws.onEvent(onWsEvent);
   server.addHandler(&ws);
@@ -41,7 +35,6 @@ void setup() {
 
 void loop() {
   // The loop is empty because the server and WebSocket are handled asynchronously
-  // Serial.println("test");
   str_msg.data = "Hello, ROS!";
   chatter.publish(&str_msg);
   nh.spinOnce();

@@ -25,16 +25,55 @@ void arx_lite::publish_pose()
     }
 }
 
+arm_control::PosCmd arx_lite::change_joint_type(geometry_msgs::Pose pose)
+{
+    //
+    arm_control::PosCmd cmd;
+    cmd.x = pose.position.x;
+    cmd.y = pose.position.y;
+    cmd.z = pose.position.z;
+    cmd.roll = pose.orientation.x;
+    cmd.pitch = pose.orientation.y;
+    cmd.yaw = pose.orientation.z;
+
+    return cmd;
+}
+
+void arx_lite::move_joint()
+{
+    // for(auto iter = get_param().home_joint_angle.begin(); iter!=get_param().home_joint_angle.end();++iter)
+    // {
+    //     j_cmd.joint_pos.push_back(*iter);
+    //     j_cmd.joint_vel.push_back();  
+    // }
+}
+
 void arx_lite::joystick_callback(const survive_publisher::joystick::ConstPtr msg)
 {
-    if(msg->press_up == true && msg->press_down == false && cmd.gripper < 5)
+    if(get_tf_start_flag())
     {
-        cmd.gripper += 0.2;
+        if(msg->press_up == true && msg->press_down == false && cmd.gripper < 5)
+        {
+            cmd.gripper += 0.2;
+        }
+        else if(msg->press_down == true && msg->press_up == false && cmd.gripper > 0)
+        {
+            cmd.gripper -= 0.2;
+        }
     }
-    else if(msg->press_down == true && msg->press_up == false && cmd.gripper > 0)
+    else
     {
-        cmd.gripper -= 0.2;
+        if(get_init_flag() == false && msg->press_js == true)
+        {
+            move_to_homepose();
+            set_init_flag(true);
+        }
+        if(msg->press_js == false)
+        {
+            set_init_flag(false);
+        }
     }
+    
 }
 
 int main(int argc, char **argv) {
@@ -50,6 +89,14 @@ int main(int argc, char **argv) {
     nh.getParam("/vive/tracker_right", param_lists.right_arm_link);
     nh.getParam("/vive/joystick_topic", param_lists.joystick_topic);
     nh.getParam("/vive/cmd_topic_name", param_lists.cmd_topic_name);
+    //nh.getParam("/vive/joint_num", param_lists.joint_num);
+    nh.getParam("/vive/init_angle", param_lists.home_joint_angle);
+    nh.getParam("/vive/base_x", param_lists.home_tcp.position.x);
+    nh.getParam("/vive/base_y", param_lists.home_tcp.position.y);
+    nh.getParam("/vive/base_z", param_lists.home_tcp.position.z);
+    nh.getParam("/vive/base_roll", param_lists.home_tcp.orientation.x);
+    nh.getParam("/vive/base_pitch", param_lists.home_tcp.orientation.y);
+    nh.getParam("/vive/base_yaw", param_lists.home_tcp.orientation.z);
 
     std::shared_ptr<arx_lite> node_ptr = std::make_shared<arx_lite>(nh,param_lists); 
     
