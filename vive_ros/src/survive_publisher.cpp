@@ -9,6 +9,8 @@ void survive_ros_node::init()
     nh.getParam("/vive/world_name",world_name);
     nh.getParam("/vive/tracker_left",tracker_left);
     nh.getParam("/vive/tracker_right", tracker_right);
+    nh.getParam("/vive/left_hand",left_hand);
+    nh.getParam("/vive/right_hand", right_hand);
     nh.getParam("/vive/teleop_base", teleop_base);
     nh.getParam("/vive/base_station_1", base_station_1);
     nh.getParam("/vive/base_station_2", base_station_2);
@@ -18,6 +20,9 @@ void survive_ros_node::init()
     nh.getParam("/vive/base_roll", base_roll);
     nh.getParam("/vive/base_pitch", base_pitch);
     nh.getParam("/vive/base_yaw", base_yaw);
+    nh.getParam("/vive/hand_x", hand_x);
+    nh.getParam("/vive/hand_y", hand_y);
+    nh.getParam("/vive/hand_z", hand_z);
 
 
     joystick_sub = nh.subscribe("/joystick",5,&survive_ros_node::joystick_callback,this);
@@ -29,7 +34,6 @@ void survive_ros_node::init()
     tracker_static.header.frame_id = world_name;
     tracker_static.child_frame_id = teleop_base;
     tracker_static.transform.rotation.w = 1;
-    // broadcaster.sendTransform(tracker_static);
 
 }
 
@@ -70,7 +74,6 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
                 // world到base
                 tf::Transform world_to_base_trans = world_to_stand_trans * stand_to_base_trans;
 
-                tracker_static.header.stamp = ros::Time::now();
                 tracker_static.transform.translation.x = world_to_base_trans.getOrigin().x();
                 tracker_static.transform.translation.y = world_to_base_trans.getOrigin().y();
                 tracker_static.transform.translation.z = world_to_base_trans.getOrigin().z();
@@ -88,6 +91,12 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
         // pub tracker static tf
         tracker_static.header.stamp = ros::Time::now();
         broadcaster.sendTransform(tracker_static);
+
+        // pub hand to tracker static
+        tf::Transform hand_to_tracker;
+        hand_to_tracker.setOrigin(tf::Vector3(hand_x, hand_y, hand_z));
+        hand_to_tracker.setRotation(tf::Quaternion(0, 0, 0, 1));
+        broadcaster.sendTransform(tf::StampedTransform(hand_to_tracker, ros::Time::now(), tracker_left, left_hand));
     }
     else
     {

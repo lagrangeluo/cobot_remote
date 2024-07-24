@@ -31,12 +31,17 @@ class survive_ros_node
         std::string tracker_left;
         std::string tracker_right;
         std::string teleop_base;
+        std::string left_hand;
+        std::string right_hand;
         std::string base_station_1;
         std::string base_station_2;
 
         // 初始位置位置补偿
         double base_x, base_y, base_z, base_roll, base_pitch, base_yaw;
 
+        // 追踪器到手位置补偿
+        double hand_x,hand_y,hand_z;
+        
         // start flag from joy button
         bool start_teleop;
 

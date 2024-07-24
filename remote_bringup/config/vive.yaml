@@ -18,12 +18,18 @@ vive:
     button_press_time: 25
     button_single_press: 4
 
+    #机械臂初始化tcp坐标系
     base_x: 0.01
     base_y: 0
     base_z: 0.01
     base_roll: 0
     base_pitch: 0
     base_yaw: 0
+
+    #hand相对追踪器的坐标
+    hand_x: 0
+    hand_y: 0
+    hand_z: -0.05
 
     joint_num: 7
 

@@ -85,8 +85,8 @@ int main(int argc, char **argv) {
     param_t param_lists;
 
     nh.getParam("/vive/teleop_base",param_lists.base_link);
-    nh.getParam("/vive/tracker_left",param_lists.left_arm_link);
-    nh.getParam("/vive/tracker_right", param_lists.right_arm_link);
+    nh.getParam("/vive/left_hand",param_lists.left_arm_link);
+    nh.getParam("/vive/right_hand", param_lists.right_arm_link);
     nh.getParam("/vive/joystick_topic", param_lists.joystick_topic);
     nh.getParam("/vive/cmd_topic_name", param_lists.cmd_topic_name);
     //nh.getParam("/vive/joint_num", param_lists.joint_num);
