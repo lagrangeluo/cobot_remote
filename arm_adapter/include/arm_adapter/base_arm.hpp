@@ -33,6 +33,9 @@ struct param_t
     std::vector<double> home_joint_angle;
     //也可以使用初始化tcp坐标
     geometry_msgs::Pose home_tcp;
+    //返回初始采样次数和播放插值轨迹频率
+    uint16_t sample_time;
+    uint16_t step_freq;
 };
 
 //存储tf变换的位姿结构体
@@ -134,6 +137,7 @@ class ArmCommonInterface{
         {
             double x,y,z,roll,pitch,yaw;
             uint8_t sample_time = 50;
+            ros::Rate rate(50);
 
             x = transform.tf_trans.transform.translation.x;
             y = transform.tf_trans.transform.translation.y;
@@ -159,7 +163,7 @@ class ArmCommonInterface{
 
                 arm_cmd_type cmd = change_joint_type(pose);
                 publish_cmd(cmd);
-                sleep(1/sample_time);
+                rate.sleep();
             }
         }
 

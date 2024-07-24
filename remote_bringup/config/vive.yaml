@@ -3,15 +3,24 @@ vive:
     tracker_left: "LHR-F30CC195_imu"
     tracker_right: ""
     teleop_base: "tracker_base"
+    left_hand: "left_hand"
+    right_hand: "right_hand"
     base_station_1: ""
     base_station_2: ""
 
+    esp32_topic_name: "/esp32_json_string"
     joystick_topic: "/joystick"
     cmd_topic_name: "/master2_pos_back"
 
-    base_x: 0.03
+    #joystick param
+    middle_value: 2420
+    deadband: 100
+    button_press_time: 25
+    button_single_press: 4
+
+    base_x: 0.01
     base_y: 0
-    base_z: 0.03
+    base_z: 0.01
     base_roll: 0
     base_pitch: 0
     base_yaw: 0

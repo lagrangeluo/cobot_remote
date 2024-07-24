@@ -15,4 +15,7 @@
 
     <!--机械臂适配模块-->
     <node name="arx_remote" type="arx_arm_node" pkg="arm_adapter" output="screen" />
+
+    <!--rviz-->
+    <node name="remote_rviz" pkg="rviz" type="rviz" args="-d $(find remote_bringup)/rviz/vive.rviz" />
 </launch>

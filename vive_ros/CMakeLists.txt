@@ -57,7 +57,6 @@ link_directories(../libsurvive/build)
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node src/main.cpp)
-add_executable(survive_ros_node src/survive_ros.cpp)
 add_executable(survive_publisher src/survive_publisher.cpp)
 
 ## Rename C++ executable without prefix
@@ -68,7 +67,6 @@ add_executable(survive_publisher src/survive_publisher.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(survive_ros_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(survive_publisher ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 # Specify libraries to link a library or executable target against
@@ -76,9 +74,7 @@ target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
   survive
   )
-target_link_libraries(survive_ros_node
-  ${catkin_LIBRARIES}
-  )
+
 target_link_libraries(survive_publisher
   ${catkin_LIBRARIES}
   )
@@ -90,7 +86,7 @@ catkin_install_python(PROGRAMS
 )
 
 ## Mark executables and/or libraries for installation
- install(TARGETS ${PROJECT_NAME}_node survive_ros_node survive_publisher
+ install(TARGETS ${PROJECT_NAME}_node survive_publisher
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

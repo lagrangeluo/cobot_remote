@@ -4,7 +4,7 @@
 void survive_ros_node::init()
 {
     
-    ros::NodeHandle nh("~");
+    ros::NodeHandle nh;
 
     nh.getParam("/vive/world_name",world_name);
     nh.getParam("/vive/tracker_left",tracker_left);
@@ -57,15 +57,27 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
                 tf::Quaternion new_q;
                 new_q.setRPY(roll, pitch, yaw);
                 //ROS_INFO("Tracker Base RPY: roll=%f, pitch=%f, yaw=%f", roll, pitch, yaw);
-                
+
+                // 创建 world 到 stand 的变换
+                tf::Transform world_to_stand_trans,stand_to_base_trans;
+                world_to_stand_trans.setOrigin(trans.getOrigin());
+                world_to_stand_trans.setRotation(new_q);
+
+                // 创建 stand 到 base 的变换
+                stand_to_base_trans.setOrigin(tf::Vector3(- base_x, - base_y, - base_z)); // 使用 base 相对于 hand 的 x, y, z 位置
+                stand_to_base_trans.setRotation(tf::Quaternion(0, 0, 0, 1)); // 如果有旋转，设置相应的旋转四元数
+
+                // world到base
+                tf::Transform world_to_base_trans = world_to_stand_trans * stand_to_base_trans;
+
                 tracker_static.header.stamp = ros::Time::now();
-                tracker_static.transform.translation.x = trans.getOrigin().x() + base_x;
-                tracker_static.transform.translation.y = trans.getOrigin().y() + base_y;
-                tracker_static.transform.translation.z = trans.getOrigin().z() - base_z;
-                tracker_static.transform.rotation.x = new_q.x();
-                tracker_static.transform.rotation.y = new_q.y();
-                tracker_static.transform.rotation.z = new_q.z();
-                tracker_static.transform.rotation.w = new_q.w();
+                tracker_static.transform.translation.x = world_to_base_trans.getOrigin().x();
+                tracker_static.transform.translation.y = world_to_base_trans.getOrigin().y();
+                tracker_static.transform.translation.z = world_to_base_trans.getOrigin().z();
+                tracker_static.transform.rotation.x = world_to_base_trans.getRotation().x();
+                tracker_static.transform.rotation.y = world_to_base_trans.getRotation().y();
+                tracker_static.transform.rotation.z = world_to_base_trans.getRotation().z();
+                tracker_static.transform.rotation.w = world_to_base_trans.getRotation().w();
             }
             catch(tf::TransformException &ex){
                 ROS_ERROR("%s", ex.what());

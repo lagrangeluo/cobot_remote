@@ -10,17 +10,17 @@ from survive_publisher.msg import joystick
 class joystick_node:
     def __init__(self):
         # uri and topic name
-        self.topic_name = rospy.get_param('topic_name', '/esp32_json_string')
-
+        self.topic_name = rospy.get_param('/vive/esp32_topic_name', '/esp32_json_string')
+        self.pub_name = rospy.get_param('/vive/joystick_topic', '/joystick')
         # param
-        self.middle_value = rospy.get_param('middle_value', 2420)
-        self.deadband = rospy.get_param('deadband',100)
-        self.button_press_time = rospy.get_param('button_press_time',25)
-        self.button_single_press = rospy.get_param('button_single_press',8)
+        self.middle_value = rospy.get_param('/vive/middle_value', 2420)
+        self.deadband = rospy.get_param('/vive/deadband',100)
+        self.button_press_time = rospy.get_param('/vive/button_press_time',25)
+        self.button_single_press = rospy.get_param('/vive/button_single_press',4)
 
         # self.topic_pub = rospy.Publisher(self.topic_name, String, queue_size=10)
         self.esp32_sub = rospy.Subscriber(self.topic_name, String, self.esp32_json_callback)
-        self.js_pub = rospy.Publisher("/joystick",joystick,queue_size=5)
+        self.js_pub = rospy.Publisher(self.pub_name,joystick,queue_size=5)
 
         # flag
         self.button_dic = {'up':0,'down':0,'js':0}
