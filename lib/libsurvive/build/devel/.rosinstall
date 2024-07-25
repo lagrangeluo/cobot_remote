@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/agilex/oculus_ws/src/cobot_remote/lib/libsurvive/build/devel/setup.sh

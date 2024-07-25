@@ -45,12 +45,12 @@ message( ${catkin_INCLUDE_DIRS} )
 include_directories(
   ${catkin_INCLUDE_DIRS}
   include()
-  ../libsurvive/include
-  ../libsurvive/redist  
-  ../libsurvive/libs/cnkalman/libs/cnmatrix/include
+  ../lib/libsurvive/include
+  ../lib/libsurvive/redist  
+  ../lib/libsurvive/libs/cnkalman/libs/cnmatrix/include
 )
 
-link_directories(../libsurvive/build)
+link_directories(../lib/libsurvive/build)
 
 
 ## Declare a C++ executable
