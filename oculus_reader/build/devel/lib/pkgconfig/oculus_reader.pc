@@ -1,0 +1,8 @@
+prefix=/home/agilex/oculus_ws/src/cobot_remote/oculus_reader/build/devel
+
+Name: oculus_reader
+Description: Description of oculus_reader
+Version: 0.0.1
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: geometry_msgs
