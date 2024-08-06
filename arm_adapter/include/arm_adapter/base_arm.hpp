@@ -69,7 +69,12 @@ class ArmCommonInterface{
         // 发送控制指令
         void publish_cmd(arm_cmd_type& cmd)
         {
-            cmd_pub.publish(cmd);
+            #ifndef USE_ROS_SERVICE
+                cmd_pub.publish(cmd);
+            #endif
+            #ifdef USE_ROS_SERVICE
+                cmd_client.call(cmd);
+            #endif
         }
 
         // 一次循环
@@ -96,7 +101,12 @@ class ArmCommonInterface{
             joystick_sub = nh.subscribe<survive_publisher::joystick>
                 (param_list.joystick_topic,5,std::bind(&ArmCommonInterface::joystick_callback, this, std::placeholders::_1));
 
-            cmd_pub = nh.advertise<arm_cmd_type>(param_list.cmd_topic_name,5);
+            #ifndef USE_ROS_SERVICE
+                cmd_pub = nh.advertise<arm_cmd_type>(param_list.cmd_topic_name,5);
+            #endif
+            #ifdef USE_ROS_SERVICE
+                cmd_client = nh.serviceClient<arm_cmd_type>(param_list.cmd_topic_name);
+            #endif
         }
 
         // 更新坐标变换
@@ -181,6 +191,7 @@ class ArmCommonInterface{
         param_t param_list;
 
         ros::Publisher cmd_pub;
+        ros::ServiceClient cmd_client;
         ros::Subscriber joystick_sub;
 
 };

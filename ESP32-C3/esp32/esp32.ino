@@ -12,16 +12,16 @@
 #define ADC_x_PIN   0
 #define ADC_y_PIN   1
 #define js_button   2
-#define button_up   4
-#define button_down 3
+#define button_up   3
+#define button_down 4
 #define CHANNEL     0
 
-const char* ssid = "松灵";        // 设置Wi-Fi名称
-const char* password = "agilex2024#";            // 设置Wi-Fi密码
-// const char* ssid = "Navis3";        // 设置Wi-Fi名称
-// const char* password = "12345678";            // 设置Wi-Fi密码
-// const char* ssid = "ESP32_Hotspot";        // 设置Wi-Fi名称
-// const char* password = "12345678";            // 设置Wi-Fi密码
+// const char* ssid = "mammotion";        // 设置Wi-Fi名称
+// const char* password = "Mamo12345";            // 设置Wi-Fi密码
+// const char* ssid = "CR5-4218-0975";        // 设置Wi-Fi名称
+// const char* password = "1234567890";            // 设置Wi-Fi密码
+const char* ssid = "TP-LINK";        // 设置Wi-Fi名称
+const char* password = "12345678";            // 设置Wi-Fi密码
 
 Freenove_ESP32_WS2812 strip = Freenove_ESP32_WS2812(LEDS_COUNT, LEDS_PIN, CHANNEL, TYPE_GRB);
 
@@ -30,8 +30,8 @@ Freenove_ESP32_WS2812 strip = Freenove_ESP32_WS2812(LEDS_COUNT, LEDS_PIN, CHANNE
 // AsyncWebSocket ws("/aloha");
 
 //ros
-// IPAddress server(10, 10, 96, 111);
-IPAddress server(10, 10, 24, 12);
+// IPAddress server(10, 12, 11, 179);
+IPAddress server(192,168,85,105);
 
 // IPAddress server(192, 168, 1, 109);
 // IPAddress server(192, 168, 1, 2);

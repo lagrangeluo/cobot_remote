@@ -3,36 +3,46 @@
 #include <AsyncTCP.h>
 #include <AsyncWebSocket.h>
 #include <ArduinoJson.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
 #include <ros.h>
 #include <std_msgs/String.h>
 
 #define LEDS_COUNT  1
 #define LEDS_PIN    8
 #define ADC_x_PIN   1
-#define ADC_y_PIN   2
-#define js_button   3
-#define button_up   5
-#define button_down 4
-#define CHANNEL     0
+#define ADC_y_PIN   3
+#define js_button   2
+#define button_up   4
+#define button_down 43
+#define hall_adc    7
+#define SDA_PIN     5
+#define SCL_PIN     6
 
-const char* ssid = "松灵";        // 设置Wi-Fi名称
-const char* password = "agilex2024#";            // 设置Wi-Fi密码
-// const char* ssid = "Navis3";        // 设置Wi-Fi名称
-// const char* password = "12345678";            // 设置Wi-Fi密码
-// const char* ssid = "ESP32_Hotspot";        // 设置Wi-Fi名称
-// const char* password = "12345678";            // 设置Wi-Fi密码
+// const char* ssid = "mammotion";        // 设置Wi-Fi名称
+// const char* password = "Mamo12345";            // 设置Wi-Fi密码
+const char* ssid = "TP-LINK";        // 设置Wi-Fi名称
+const char* password = "12345678";            // 设置Wi-Fi密码
+
+
+// 定义 OLED 显示屏的宽度和高度，适用于 128x32 OLED
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 32
+// 定义 I2C 引脚
+#define OLED_RESET -1  // 复位引脚（没有使用）
+#define SCREEN_ADDRESS 0x3C  // I2C 地址（大多数 OLED 显示屏地址为 0x3C）
+
+// 声明一个 OLED 显示屏对象
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+int progress = 0;
 
 //ros
-// IPAddress server(10, 10, 96, 111);
-IPAddress server(10, 10, 24, 12);
-
-// IPAddress server(192, 168, 1, 109);
-// IPAddress server(192, 168, 1, 2);
+IPAddress server(192, 168, 85, 105);
 
 uint16_t serverPort = 11411;
-char hello[13] = "hello world!";
-uint16_t period = 1000;
-uint32_t last_time = 0;
+
 bool publish_flag = false;
 ros::NodeHandle nh;
 std_msgs::String str_msg;
@@ -43,9 +53,19 @@ void setup() {
     pinMode(LED_BUILTIN, OUTPUT);
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
-    pinMode(js_button, INPUT);   // 将引脚设置为输入模式
-    pinMode(button_down, INPUT);   // 将引脚设置为输入模式
-    pinMode(button_up, INPUT);   // 将引脚设置为输入模式
+    
+    // 将引脚设置为上拉输入模式
+    pinMode(js_button, INPUT_PULLUP);   
+    pinMode(button_down, INPUT_PULLUP);
+    pinMode(button_up, INPUT_PULLUP);
+
+    // 初始化 I2C 总线
+    Wire.begin(SDA_PIN, SCL_PIN);
+    // 初始化显示屏
+    if (!display.begin(SCREEN_ADDRESS)) {
+      Serial.println(F("SSD1306 allocation failed"));
+      for (;;);
+    }
 
     nh.getHardware()->setConnection(server, serverPort);
     nh.initNode();
@@ -56,6 +76,34 @@ void setup() {
 
     // Start to be polite
     nh.advertise(chatter);
+
+    // 清除缓冲区
+    display.clearDisplay();
+    while(progress < 121)
+    {    
+      // 显示一些文本
+      display.setTextSize(1.5);
+      display.setTextColor(SSD1306_WHITE);
+      display.setCursor(0, 0);
+      display.println(F("    AgileX Robotics"));
+      display.setTextSize(1);
+      display.setCursor(0, 20);
+      display.println(F("     Spatial Teleop"));
+
+      display.display();
+
+      // 显示进度条边框
+      display.drawRoundRect(0, 10, 128, 10, 5, SSD1306_WHITE);
+      // 显示进度
+      display.fillRoundRect(4, 13, progress, 4, 3, SSD1306_WHITE);
+
+
+      // 刷新屏幕
+      display.display();
+      // delay(2); // 延迟一段时间后更新显示
+      progress+=2;
+    }
+    display.clearDisplay();
 }
 
 void loop() {
@@ -78,11 +126,19 @@ void loop() {
             digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
             delay(100);                      
             digitalWrite(LED_BUILTIN, LOW);   
-            delay(50);                      
+            delay(50);
         }
 
         Serial.print("Attempting to connect to WiFi: ");
         Serial.println(ssid);
+        display.clearDisplay();
+        display.setTextSize(1.5);
+        display.setCursor(0, 0);
+        display.println("Waiting for WiFi: ");
+        display.setCursor(0, 15);
+        display.println(ssid);
+        display.display();
+
         WiFi.begin(ssid, password);
 
         // 连接需要时间，所以我们给它300毫秒的时间来尝试连接
@@ -102,19 +158,32 @@ void loop() {
             Serial.println("WiFi connected.");
             Serial.print("IP Address: ");
             Serial.println(WiFi.localIP());
+
+            // 显示wifi连接状态
+            IPAddress localIP = WiFi.localIP();
+            String ipString = localIP.toString();
+            display.clearDisplay();
+            display.setTextSize(1.5);
+            display.setCursor(0, 0);
+            display.printf("WiFi: %s",ssid);
+            display.setCursor(0, 20);
+            display.printf("IP: %s", ipString.c_str());
+            display.display();
             firstConnect = false;
         }
         
         if (currentMillis - previousMillis >= 40) { // 每20毫秒发送一次消息，相当于50Hz
           previousMillis = currentMillis;
 
-          int js_state = digitalRead(js_button);  // 读取引脚状态
-          int button_state_up = digitalRead(button_up);
-          int button_state_down = digitalRead(button_down);
+          // 读取引脚状态，引脚上拉输入，所以进行逻辑反转
+          int js_state = 1 - digitalRead(js_button);  
+          int button_state_up = 1 - digitalRead(button_up);
+          int button_state_down = 1 - digitalRead(button_down);
 
           // 读取adc数值
           int adcValue_x = analogRead(ADC_x_PIN); // 读取ADC值（0-4095）
           int adcValue_y = analogRead(ADC_y_PIN); // 读取ADC值（0-4095）
+          int adcValue_hall = analogRead(hall_adc); //读取adc数值
 
           String voltageStr_x = String(adcValue_x);
           String voltageStr_y = String(adcValue_y);
@@ -128,6 +197,7 @@ void loop() {
             doc["js_button"] = js_state;
             doc["up_button"] = button_state_up;
             doc["down_button"] = button_state_down;
+            doc["hall_adc"] = adcValue_hall;
             String jsonString;
             serializeJson(doc, jsonString);
             str_msg.data = jsonString.c_str();
@@ -162,5 +232,6 @@ void loop() {
             WiFi.disconnect();  // 断开当前连接
         }
     }
+
   }
 
