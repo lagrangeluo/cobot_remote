@@ -108,7 +108,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
  INCLUDE_DIRS include
-#  LIBRARIES arm_adapter
+ LIBRARIES base_arm_lib
  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
@@ -125,11 +125,14 @@ include_directories(
   ./include
 )
 
-## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/arm_adapter.cpp
-# )
-
+# Declare a C++ library
+add_library(base_arm_lib SHARED
+  src/base_arm.cpp
+)
+add_dependencies(base_arm_lib ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(base_arm_lib
+  ${catkin_LIBRARIES}
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -138,9 +141,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(base_arm_node src/base_arm.cpp)
 add_executable(arx_arm_node src/arx_lite.cpp)
-add_executable(dobot_arm_node src/dobot_cr5.cpp)
+# add_executable(dobot_arm_node src/dobot_cr5.cpp)
 add_executable(agilex_node src/agilex.cpp)
 
 ## Rename C++ executable without prefix
@@ -151,22 +153,22 @@ add_executable(agilex_node src/agilex.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(base_arm_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(arx_arm_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(dobot_arm_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(dobot_arm_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(agilex_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(base_arm_node
-  ${catkin_LIBRARIES}
-)
+
 target_link_libraries(arx_arm_node
+  base_arm_lib
   ${catkin_LIBRARIES}
 )
-target_link_libraries(dobot_arm_node
-  ${catkin_LIBRARIES}
-)
+# target_link_libraries(dobot_arm_node
+#   base_arm_lib
+#   ${catkin_LIBRARIES}
+# )
 target_link_libraries(agilex_node
+  base_arm_lib  
   ${catkin_LIBRARIES}
 )
 
@@ -187,8 +189,10 @@ target_link_libraries(agilex_node
 
 # Mark executables for installation
 # See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-install(TARGETS base_arm_node arx_arm_node dobot_arm_node agilex_node
+install(TARGETS base_arm_lib arx_arm_node agilex_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
 )
 
 ## Mark libraries for installation
