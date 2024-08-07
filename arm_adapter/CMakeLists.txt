@@ -141,6 +141,7 @@ include_directories(
 add_executable(base_arm_node src/base_arm.cpp)
 add_executable(arx_arm_node src/arx_lite.cpp)
 add_executable(dobot_arm_node src/dobot_cr5.cpp)
+add_executable(agilex_node src/agilex.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -153,6 +154,7 @@ add_executable(dobot_arm_node src/dobot_cr5.cpp)
 add_dependencies(base_arm_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(arx_arm_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(dobot_arm_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(agilex_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(base_arm_node
@@ -162,6 +164,9 @@ target_link_libraries(arx_arm_node
   ${catkin_LIBRARIES}
 )
 target_link_libraries(dobot_arm_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(agilex_node
   ${catkin_LIBRARIES}
 )
 
@@ -182,7 +187,7 @@ target_link_libraries(dobot_arm_node
 
 # Mark executables for installation
 # See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-install(TARGETS base_arm_node arx_arm_node
+install(TARGETS base_arm_node arx_arm_node dobot_arm_node agilex_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

@@ -1,5 +1,4 @@
-#include "arm_adapter/arx_lite.hpp"
-
+#include "arm_adapter/agilex.hpp"
 
 
 arx_lite::arx_lite(ros::NodeHandle node,param_t& param_list):ArmCommonInterface(node,param_list)
@@ -12,12 +11,15 @@ void arx_lite::publish_pose()
 {
     if(get_tf_start_flag())
     {
-        cmd.x = get_transform().tf_trans.transform.translation.x;
-        cmd.y = get_transform().tf_trans.transform.translation.y;
-        cmd.z = get_transform().tf_trans.transform.translation.z;
-        cmd.roll = get_transform().roll;
-        cmd.pitch = get_transform().pitch;
-        cmd.yaw = get_transform().yaw;
+        cmd.x = 1000*get_transform().tf_trans.transform.translation.x;
+        cmd.y = 1000*get_transform().tf_trans.transform.translation.y;
+        cmd.z = 1000*get_transform().tf_trans.transform.translation.z;
+        // cmd.roll = get_transform().roll;
+        // cmd.pitch = get_transform().pitch;
+        // cmd.yaw = get_transform().yaw;
+        cmd.roll = 0;
+        cmd.pitch = 90;
+        cmd.yaw = 0;
 
         // 发布指令
         publish_cmd(cmd);
