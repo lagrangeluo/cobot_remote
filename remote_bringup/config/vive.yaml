@@ -10,7 +10,8 @@ vive:
 
     esp32_topic_name: "/esp32_json_string"
     joystick_topic: "/joystick"
-    cmd_topic_name: "/master2_pos_back"
+    cmd_left_name: "/master2_pos_back"
+    cmd_right_name: ""
 
     #joystick param
     middle_value: 2420
@@ -30,6 +31,9 @@ vive:
     hand_x: 0
     hand_y: 0
     hand_z: -0.05
+    hand_roll: 0
+    hand_pitch: 0
+    hand_yaw: 0
 
     joint_num: 7
 

@@ -12,15 +12,30 @@ void arx_lite::publish_pose()
 {
     if(get_tf_start_flag())
     {
-        cmd.x = get_transform().tf_trans.transform.translation.x;
-        cmd.y = get_transform().tf_trans.transform.translation.y;
-        cmd.z = get_transform().tf_trans.transform.translation.z;
-        cmd.roll = get_transform().roll;
-        cmd.pitch = get_transform().pitch;
-        cmd.yaw = get_transform().yaw;
+        if(if_left_exist())
+        {
+            cmd.x = get_transform().tf_trans.transform.translation.x;
+            cmd.y = get_transform().tf_trans.transform.translation.y;
+            cmd.z = get_transform().tf_trans.transform.translation.z;
+            cmd.roll = get_transform().roll;
+            cmd.pitch = get_transform().pitch;
+            cmd.yaw = get_transform().yaw;
 
-        // 发布指令
-        publish_cmd(cmd);
+            // 发布指令
+            publish_cmd(cmd);
+        }
+        if(if_right_exist())
+        {
+            cmd.x = get_transform().tf_trans.transform.translation.x;
+            cmd.y = get_transform().tf_trans.transform.translation.y;
+            cmd.z = get_transform().tf_trans.transform.translation.z;
+            cmd.roll = get_transform().roll;
+            cmd.pitch = get_transform().pitch;
+            cmd.yaw = get_transform().yaw;
+
+            // 发布指令
+            publish_cmd(cmd);
+        }
     }
 }
 
@@ -87,7 +102,8 @@ int main(int argc, char **argv) {
     nh.getParam("/vive/left_hand",param_lists.left_arm_link);
     nh.getParam("/vive/right_hand", param_lists.right_arm_link);
     nh.getParam("/vive/joystick_topic", param_lists.joystick_topic);
-    nh.getParam("/vive/cmd_topic_name", param_lists.cmd_topic_name);
+    nh.getParam("/vive/cmd_left_name", param_lists.cmd_left_name);
+    nh.getParam("/vive/cmd_right_name", param_lists.cmd_right_name);
     //nh.getParam("/vive/joint_num", param_lists.joint_num);
     nh.getParam("/vive/init_angle", param_lists.home_joint_angle);
     nh.getParam("/vive/base_x", param_lists.home_tcp.position.x);

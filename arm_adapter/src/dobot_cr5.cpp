@@ -96,7 +96,8 @@ int main(int argc, char **argv) {
     nh.getParam("/vive/left_hand",param_lists.left_arm_link);
     nh.getParam("/vive/right_hand", param_lists.right_arm_link);
     nh.getParam("/vive/joystick_topic", param_lists.joystick_topic);
-    nh.getParam("/vive/cmd_topic_name", param_lists.cmd_topic_name);
+    nh.getParam("/vive/cmd_left_name", param_lists.cmd_left_name);
+    nh.getParam("/vive/cmd_right_name", param_lists.cmd_right_name);
     //nh.getParam("/vive/joint_num", param_lists.joint_num);
     nh.getParam("/vive/init_angle", param_lists.home_joint_angle);
     nh.getParam("/vive/base_x", param_lists.home_tcp.position.x);

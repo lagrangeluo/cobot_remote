@@ -10,7 +10,8 @@ vive:
 
     esp32_topic_name: "/esp32_json_string"
     joystick_topic: "/joystick"
-    cmd_topic_name: "/pos_cmd"
+    cmd_left_name: "/pos_cmd"
+    cmd_right_name: ""
 
     #joystick param
     middle_value: 2420
@@ -19,9 +20,9 @@ vive:
     button_single_press: 4
 
     #机械臂初始化tcp坐标系
-    base_x: 0.01
+    base_x: -0.05
     base_y: 0
-    base_z: 0.01
+    base_z: 0.1
     base_roll: 0
     base_pitch: 0
     base_yaw: 0
@@ -30,6 +31,9 @@ vive:
     hand_x: 0
     hand_y: 0
     hand_z: -0.05
+    hand_roll: 0
+    hand_pitch: 0
+    hand_yaw: 0
 
     joint_num: 7
 

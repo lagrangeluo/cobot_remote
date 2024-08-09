@@ -28,7 +28,8 @@ struct param_t
     //摇杆话题名字
     std::string joystick_topic;
     //机械臂控制话题名字
-    std::string cmd_topic_name;
+    std::string cmd_left_name;
+    std::string cmd_right_name;
     //初始化关节角度
     std::vector<double> home_joint_angle;
     //也可以使用初始化tcp坐标
@@ -67,17 +68,22 @@ class ArmCommonInterface{
         virtual arm_cmd_type change_joint_type(geometry_msgs::Pose pose) = 0;
 
         // 发送控制指令
-        void publish_cmd(arm_cmd_type& cmd);
+        void publish_cmd(std::string arm_type, arm_cmd_type& cmd);
 
         // 一次循环
         void loop_once();
 
         // 获取私有变量
-        transform_t get_transform(){return transform;}
+        transform_t get_left_transform(){return transform_left;}
+        transform_t get_right_transform(){return transform_right;}
         bool get_tf_start_flag(){return tf2_start_flag;}
         bool get_init_flag(){return init_flag;}
         void set_init_flag(bool value){init_flag = value;}
         param_t& get_param(){return param_list;}
+
+        // 判断走右手是否存在
+        bool if_left_exist();
+        bool if_right_exist();
 
         // 初始化ros接口
         void init_interface();
@@ -97,11 +103,13 @@ class ArmCommonInterface{
         bool init_flag = false;
 
         // 存储tf变换和位姿
-        transform_t transform;
+        transform_t transform_left;
+        transform_t transform_right;
         // 存储参数
         param_t param_list;
 
-        ros::Publisher cmd_pub;
+        ros::Publisher cmd_left_pub;
+        ros::Publisher cmd_right_pub;
         ros::ServiceClient cmd_client;
         ros::Subscriber joystick_sub;
 
@@ -109,7 +117,7 @@ class ArmCommonInterface{
 
 // 显式实例化模板类
 #include <arm_control/PosCmd.h>
-#include <dobot_bringup/MovJ.h>
+//#include <dobot_bringup/MovJ.h>
 
 template class ArmCommonInterface<arm_control::PosCmd>;
 //template class ArmCommonInterface<dobot_bringup::MovJ>;
