@@ -23,11 +23,15 @@ void survive_ros_node::init()
     nh.getParam("/vive/hand_x", hand_x);
     nh.getParam("/vive/hand_y", hand_y);
     nh.getParam("/vive/hand_z", hand_z);
+    nh.getParam("/vive/hand_roll", hand_roll);
+    nh.getParam("/vive/hand_pitch", hand_pitch);
+    nh.getParam("/vive/hand_yaw", hand_yaw);
 
 
     joystick_sub = nh.subscribe("/joystick",5,&survive_ros_node::joystick_callback,this);
     
     start_teleop = false;
+    start_teleop_state = false;
     // init tracker base transform
     tracker_static={};
     tracker_static.header.stamp = ros::Time::now();
@@ -43,13 +47,47 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
     //如果长按两个按键，更新tracker基座标
     if(msg->press_up_dowm == true)
     {
+        start_teleop_state = true;
+
+    }
+    else
+    {
+        start_teleop_state = false;
+
+    }
+
+    //长按js按键，结束模式清除base xyz
+    if(msg->press_js == true)
+    {
+        ros::NodeHandle nh("~");
+
+        //重新获取base xyz
+        nh.getParam("/vive/base_x", base_x);
+        nh.getParam("/vive/base_y", base_y);
+        nh.getParam("/vive/base_z", base_z);
+    }
+}
+
+void survive_ros_node::update_hand_frame()
+{
+    if(start_teleop_state == true)
+    {
+        // pub hand to tracker static
+        tf::Transform hand_to_tracker;
+        tf::Quaternion quaternion;
+        quaternion.setRPY(hand_roll,hand_pitch,hand_yaw);
+
+        hand_to_tracker.setOrigin(tf::Vector3(hand_x, hand_y, hand_z));
+        hand_to_tracker.setRotation(quaternion);
+        broadcaster.sendTransform(tf::StampedTransform(hand_to_tracker, ros::Time::now(), tracker_left, left_hand));
+
         if(start_teleop == false)
         {
             start_teleop = true;
             // storage current tf transform
             tf::StampedTransform trans;
             try{
-                listener.lookupTransform(world_name,tracker_left,ros::Time(0),trans);
+                listener.lookupTransform(world_name,left_hand,ros::Time(0),trans);
                 tf::Quaternion q = trans.getRotation();
 
                 // get r p y and only use y angle
@@ -91,12 +129,6 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
         // pub tracker static tf
         tracker_static.header.stamp = ros::Time::now();
         broadcaster.sendTransform(tracker_static);
-
-        // pub hand to tracker static
-        tf::Transform hand_to_tracker;
-        hand_to_tracker.setOrigin(tf::Vector3(hand_x, hand_y, hand_z));
-        hand_to_tracker.setRotation(tf::Quaternion(0, 0, 0, 1));
-        broadcaster.sendTransform(tf::StampedTransform(hand_to_tracker, ros::Time::now(), tracker_left, left_hand));
     }
     else
     {
@@ -120,19 +152,7 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
             }
         }
     }
-
-    //长按js按键，结束模式清除base xyz
-    if(msg->press_js == true)
-    {
-        ros::NodeHandle nh("~");
-
-        //重新获取base xyz
-        nh.getParam("/vive/base_x", base_x);
-        nh.getParam("/vive/base_y", base_y);
-        nh.getParam("/vive/base_z", base_z);
-    }
 }
-
 
 int main(int argc, char **argv) {
 
@@ -145,6 +165,7 @@ int main(int argc, char **argv) {
 
     while(nh.ok())
     {
+        node_ptr->update_hand_frame();
         ros::spinOnce();
         rate.sleep();
     }

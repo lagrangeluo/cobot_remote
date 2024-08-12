@@ -14,27 +14,27 @@ void arx_lite::publish_pose()
     {
         if(if_left_exist())
         {
-            cmd.x = get_transform().tf_trans.transform.translation.x;
-            cmd.y = get_transform().tf_trans.transform.translation.y;
-            cmd.z = get_transform().tf_trans.transform.translation.z;
-            cmd.roll = get_transform().roll;
-            cmd.pitch = get_transform().pitch;
-            cmd.yaw = get_transform().yaw;
+            cmd.x = get_left_transform().tf_trans.transform.translation.x;
+            cmd.y = get_left_transform().tf_trans.transform.translation.y;
+            cmd.z = get_left_transform().tf_trans.transform.translation.z;
+            cmd.roll = get_left_transform().roll;
+            cmd.pitch = get_left_transform().pitch;
+            cmd.yaw = get_left_transform().yaw;
 
             // 发布指令
-            publish_cmd(cmd);
+            publish_cmd("left",cmd);
         }
         if(if_right_exist())
         {
-            cmd.x = get_transform().tf_trans.transform.translation.x;
-            cmd.y = get_transform().tf_trans.transform.translation.y;
-            cmd.z = get_transform().tf_trans.transform.translation.z;
-            cmd.roll = get_transform().roll;
-            cmd.pitch = get_transform().pitch;
-            cmd.yaw = get_transform().yaw;
+            cmd.x = get_right_transform().tf_trans.transform.translation.x;
+            cmd.y = get_right_transform().tf_trans.transform.translation.y;
+            cmd.z = get_right_transform().tf_trans.transform.translation.z;
+            cmd.roll = get_right_transform().roll;
+            cmd.pitch = get_right_transform().pitch;
+            cmd.yaw = get_right_transform().yaw;
 
             // 发布指令
-            publish_cmd(cmd);
+            publish_cmd("right",cmd);
         }
     }
 }

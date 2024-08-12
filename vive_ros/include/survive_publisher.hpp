@@ -16,6 +16,7 @@ class survive_ros_node
     public:
         void init();
         void joystick_callback(const survive_publisher::joystick::ConstPtr msg);
+        void update_hand_frame();
     
     private:
         // ros
@@ -40,9 +41,10 @@ class survive_ros_node
         double base_x, base_y, base_z, base_roll, base_pitch, base_yaw;
 
         // 追踪器到手位置补偿
-        double hand_x,hand_y,hand_z;
+        double hand_x,hand_y,hand_z,hand_roll,hand_pitch,hand_yaw;
         
         // start flag from joy button
+        bool start_teleop_state;
         bool start_teleop;
 
         // for arx arm

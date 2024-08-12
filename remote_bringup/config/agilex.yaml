@@ -20,9 +20,9 @@ vive:
     button_single_press: 4
 
     #机械臂初始化tcp坐标系
-    base_x: -0.05
+    base_x: 0.05
     base_y: 0
-    base_z: 0.1
+    base_z: 0.2
     base_roll: 0
     base_pitch: 0
     base_yaw: 0
@@ -33,7 +33,7 @@ vive:
     hand_z: -0.05
     hand_roll: 0
     hand_pitch: 0
-    hand_yaw: 0
+    hand_yaw: 3.14
 
     joint_num: 7
 

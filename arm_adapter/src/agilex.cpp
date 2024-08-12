@@ -13,15 +13,15 @@ void arx_lite::publish_pose()
     {
         if(if_left_exist())
         {
-            cmd.x = -1000*get_left_transform().tf_trans.transform.translation.x;
-            cmd.y = -1000*get_left_transform().tf_trans.transform.translation.y;
+            cmd.x = 1000*get_left_transform().tf_trans.transform.translation.x;
+            cmd.y = 1000*get_left_transform().tf_trans.transform.translation.y;
             cmd.z = 1000*get_left_transform().tf_trans.transform.translation.z;
-            // cmd.roll = (180*get_left_transform().roll)/3.1415;
-            // cmd.pitch = (180*get_left_transform().pitch)/3.1415 + 90;
-            //cmd.yaw = (180*get_left_transform().yaw)/3.1415;
-            cmd.roll = 0;
-            cmd.pitch = 90;
-            cmd.yaw = 0;
+            cmd.roll = (180*get_left_transform().roll)/3.1415;
+            cmd.pitch = (180*get_left_transform().pitch)/3.1415 + 90;
+            cmd.yaw = (180*get_left_transform().yaw)/3.1415;
+            // cmd.roll = 0;
+            // cmd.pitch = 90;
+            // cmd.yaw = 0;
             // 发布指令
             publish_cmd("left",cmd);
         }
