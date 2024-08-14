@@ -37,6 +37,10 @@ struct param_t
     //返回初始采样次数和播放插值轨迹频率
     uint16_t sample_time;
     uint16_t step_freq;
+    //遥操作比例尺
+    float scale_x;
+    float scale_y;
+    float scale_z;
 };
 
 //存储tf变换的位姿结构体
@@ -90,6 +94,9 @@ class ArmCommonInterface{
 
         // 更新坐标变换
         void update_arm();
+
+        // tf变换等比例放大或缩小
+        void scale_transform();
 
         // 机械臂移动到初始状态
         void move_to_homepose();

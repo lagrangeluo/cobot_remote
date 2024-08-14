@@ -35,6 +35,11 @@ vive:
     hand_pitch: 0
     hand_yaw: 0
 
+    #遥操作比例尺
+    scale_x: 1
+    scale_y: 1
+    scale_z: 1
+    
     joint_num: 7
 
     init_angle:

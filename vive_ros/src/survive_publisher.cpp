@@ -70,17 +70,16 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
 
 void survive_ros_node::update_hand_frame()
 {
+    // pub hand to tracker static
+    tf::Transform hand_to_tracker;
+    tf::Quaternion quaternion;
+    quaternion.setRPY(hand_roll,hand_pitch,hand_yaw);
+    hand_to_tracker.setOrigin(tf::Vector3(hand_x, hand_y, hand_z));
+    hand_to_tracker.setRotation(quaternion);
+    broadcaster.sendTransform(tf::StampedTransform(hand_to_tracker, ros::Time::now(), tracker_left, left_hand));
+
     if(start_teleop_state == true)
     {
-        // pub hand to tracker static
-        tf::Transform hand_to_tracker;
-        tf::Quaternion quaternion;
-        quaternion.setRPY(hand_roll,hand_pitch,hand_yaw);
-
-        hand_to_tracker.setOrigin(tf::Vector3(hand_x, hand_y, hand_z));
-        hand_to_tracker.setRotation(quaternion);
-        broadcaster.sendTransform(tf::StampedTransform(hand_to_tracker, ros::Time::now(), tracker_left, left_hand));
-
         if(start_teleop == false)
         {
             start_teleop = true;

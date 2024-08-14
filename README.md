@@ -5,7 +5,11 @@
 ### 启动
 
 1. 遥控器上电，确保基站已经上电，启动命令
-
+- agilex机械臂：
+``` bash
+roslaunch remote_bringup agilex_remote.launch
+```
+- arx机械臂：
 ``` bash
 roslaunch remote_bringup arx_remote.launch
 ```

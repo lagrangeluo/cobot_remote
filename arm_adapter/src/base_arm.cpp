@@ -65,6 +65,21 @@ void ArmCommonInterface<arm_cmd_type>::init_interface()
     #endif
 }
 
+// tf变换等比例放大或缩小
+template<typename arm_cmd_type>
+void ArmCommonInterface<arm_cmd_type>::scale_transform()
+{
+    //left
+    transform_left.tf_trans.transform.translation.x *= param_list.scale_x;
+    transform_left.tf_trans.transform.translation.y *= param_list.scale_y;
+    transform_left.tf_trans.transform.translation.z *= param_list.scale_z;
+
+    //right
+    transform_right.tf_trans.transform.translation.x *= param_list.scale_x;
+    transform_right.tf_trans.transform.translation.y *= param_list.scale_y;
+    transform_right.tf_trans.transform.translation.z *= param_list.scale_z;
+}
+
 // 更新坐标变换
 template<typename arm_cmd_type>
 void ArmCommonInterface<arm_cmd_type>::update_arm()
@@ -99,6 +114,9 @@ void ArmCommonInterface<arm_cmd_type>::update_arm()
 
             tf2::Matrix3x3(quat_right).getRPY(transform_right.roll, transform_right.pitch, transform_right.yaw);
         }
+
+        //等比例进行放大缩小
+        scale_transform()
 
         //标志位
         tf2_start_flag = true;

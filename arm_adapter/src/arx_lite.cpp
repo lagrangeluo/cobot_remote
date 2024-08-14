@@ -112,6 +112,9 @@ int main(int argc, char **argv) {
     nh.getParam("/vive/base_roll", param_lists.home_tcp.orientation.x);
     nh.getParam("/vive/base_pitch", param_lists.home_tcp.orientation.y);
     nh.getParam("/vive/base_yaw", param_lists.home_tcp.orientation.z);
+    nh.getParam("/vive/scale_x", param_lists.scale_x);
+    nh.getParam("/vive/scale_y", param_lists.scale_y);
+    nh.getParam("/vive/scale_z", param_lists.scale_z);
 
     std::shared_ptr<arx_lite> node_ptr = std::make_shared<arx_lite>(nh,param_lists); 
     
