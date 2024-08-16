@@ -1,8 +1,9 @@
 vive:
     world_name: "libsurvive_world"
     tracker_left: "LHR-F30CC195_imu"
-    tracker_right: ""
-    teleop_base: "tracker_base"
+    tracker_right: "LHR-347E0F0A_imu"
+    teleop_base_left: "tracker_base_left"
+    teleop_base_right: "tracker_base_right"
     left_hand: "left_hand"
     right_hand: "right_hand"
     base_station_1: ""
@@ -11,7 +12,7 @@ vive:
     esp32_topic_name: "/esp32_json_string"
     joystick_topic: "/joystick"
     cmd_left_name: "/master2_pos_back"
-    cmd_right_name: ""
+    cmd_right_name: "/master1_pos_back"
 
     #joystick param
     middle_value: 2420
@@ -33,13 +34,13 @@ vive:
     hand_z: -0.05
     hand_roll: 0
     hand_pitch: 0
-    hand_yaw: 0
+    hand_yaw: 3.14
 
     #遥操作比例尺
     scale_x: 1
     scale_y: 1
     scale_z: 1
-    
+
     joint_num: 7
 
     init_angle:

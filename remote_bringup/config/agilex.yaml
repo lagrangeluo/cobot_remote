@@ -2,7 +2,8 @@ vive:
     world_name: "libsurvive_world"
     tracker_left: "LHR-F30CC195_imu"
     tracker_right: ""
-    teleop_base: "tracker_base"
+    teleop_base_left: "tracker_base_left"
+    teleop_base_right: "tracker_base_right"
     left_hand: "left_hand"
     right_hand: "right_hand"
     base_station_1: ""
@@ -39,7 +40,7 @@ vive:
     scale_x: 1
     scale_y: 1
     scale_z: 1
-    
+
     joint_num: 7
 
     init_angle:

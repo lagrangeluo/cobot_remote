@@ -69,11 +69,19 @@ Visualization Manager:
           Value: true
         LHB-84033BFD_imu:
           Value: true
+        LHR-347E0F0A:
+          Value: false
+        LHR-347E0F0A_imu:
+          Value: true
         LHR-F30CC195:
           Value: false
         LHR-F30CC195_imu:
           Value: true
+        left_hand:
+          Value: true
         libsurvive_world:
+          Value: true
+        right_hand:
           Value: true
       Marker Alpha: 1
       Marker Scale: 1
@@ -89,9 +97,14 @@ Visualization Manager:
           LHB-84033BFD:
             LHB-84033BFD_imu:
               {}
+          LHR-347E0F0A:
+            LHR-347E0F0A_imu:
+              right_hand:
+                {}
           LHR-F30CC195:
             LHR-F30CC195_imu:
-              {}
+              left_hand:
+                {}
       Update Interval: 0
       Value: true
   Enabled: true

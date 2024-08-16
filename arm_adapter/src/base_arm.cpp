@@ -90,7 +90,7 @@ void ArmCommonInterface<arm_cmd_type>::update_arm()
         if(if_left_exist())
         {
             ros::Time now = ros::Time::now();
-            transform_left.tf_trans = tfBuffer.lookupTransform(param_list.base_link, param_list.left_arm_link, now - timeout,timeout);
+            transform_left.tf_trans = tfBuffer.lookupTransform(param_list.base_link_l, param_list.left_arm_link, now - timeout,timeout);
 
             tf2::Quaternion quat_left(
                 transform_left.tf_trans.transform.rotation.x,
@@ -104,7 +104,7 @@ void ArmCommonInterface<arm_cmd_type>::update_arm()
         if(if_right_exist())
         {
             ros::Time now = ros::Time::now();
-            transform_right.tf_trans = tfBuffer.lookupTransform(param_list.base_link, param_list.right_arm_link, now - timeout,timeout);
+            transform_right.tf_trans = tfBuffer.lookupTransform(param_list.base_link_r, param_list.right_arm_link, now - timeout,timeout);
 
             tf2::Quaternion quat_right(
                 transform_right.tf_trans.transform.rotation.x,
@@ -116,7 +116,7 @@ void ArmCommonInterface<arm_cmd_type>::update_arm()
         }
 
         //等比例进行放大缩小
-        scale_transform()
+        scale_transform();
 
         //标志位
         tf2_start_flag = true;

@@ -22,7 +22,8 @@
 struct param_t
 {
     //坐标系名字
-    std::string base_link;
+    std::string base_link_l;
+    std::string base_link_r;
     std::string left_arm_link;
     std::string right_arm_link;
     //摇杆话题名字
