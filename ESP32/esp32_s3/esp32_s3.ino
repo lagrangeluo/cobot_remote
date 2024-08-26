@@ -3,117 +3,71 @@
 #include <AsyncTCP.h>
 #include <AsyncWebSocket.h>
 #include <ArduinoJson.h>
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-
-#include <ros.h>
-#include <std_msgs/String.h>
+//文件系统
+#include "nvs_user.h"
+#include "usbmsc.h"
+//OTA
+#include <ArduinoOTA.h>
+//lcd显示屏
+#include "display.h"
+//ros
+#include "ros_esp32.h"
 
 #define LEDS_COUNT  1
 #define LEDS_PIN    8
 #define ADC_x_PIN   1
-#define ADC_y_PIN   3
-#define js_button   2
+#define ADC_y_PIN   2
+#define js_button   3
 #define button_up   4
 #define button_down 43
 #define hall_adc    7
-#define SDA_PIN     5
-#define SCL_PIN     6
 
-// const char* ssid = "mammotion";        // 设置Wi-Fi名称
-// const char* password = "Mamo12345";            // 设置Wi-Fi密码
-const char* ssid = "TP-LINK";        // 设置Wi-Fi名称
-const char* password = "12345678";            // 设置Wi-Fi密码
-
-
-// 定义 OLED 显示屏的宽度和高度，适用于 128x32 OLED
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 32
-// 定义 I2C 引脚
-#define OLED_RESET -1  // 复位引脚（没有使用）
-#define SCREEN_ADDRESS 0x3C  // I2C 地址（大多数 OLED 显示屏地址为 0x3C）
-
-// 声明一个 OLED 显示屏对象
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
-int progress = 0;
-
-//ros
-IPAddress server(192, 168, 85, 105);
-
-uint16_t serverPort = 11411;
-
-bool publish_flag = false;
-ros::NodeHandle nh;
-std_msgs::String str_msg;
-ros::Publisher chatter("esp32_json_string", &str_msg);
+static char* ssid = (char*)malloc(32 * sizeof(char));        // 设置Wi-Fi名称
+static char* password = (char*)malloc(32 * sizeof(char));    // 设置Wi-Fi密码
 
 void setup() {
+    // 串口初始化
     Serial.begin(115200);
-    pinMode(LED_BUILTIN, OUTPUT);
+    // // 连接wifi
     WiFi.mode(WIFI_STA);
-    WiFi.disconnect();
-    
+    WiFi.begin(ssid, password);
+
+    // 初始化远程OTA升级
+    ArduinoOTA.setPort(3232);  // OTA端口号
+    ArduinoOTA.begin();
+
     // 将引脚设置为上拉输入模式
-    pinMode(js_button, INPUT_PULLUP);   
+    pinMode(js_button, INPUT);
     pinMode(button_down, INPUT_PULLUP);
     pinMode(button_up, INPUT_PULLUP);
+    // LED初始化
+    pinMode(LED_BUILTIN, OUTPUT);
 
-    // 初始化 I2C 总线
-    Wire.begin(SDA_PIN, SCL_PIN);
-    // 初始化显示屏
-    if (!display.begin(SCREEN_ADDRESS)) {
-      Serial.println(F("SSD1306 allocation failed"));
-      for (;;);
-    }
+    // 初始化NVS
+    init_nvs();
+    // 从nvs中读取wifi名字和密码，读取当前手柄是左右手
+    read_nvs_data(ssid, password);
+    read_nvs_hand(hand_name);
+    // ros初始化
+    init_ros();
+    // usb存储配置
+    init_usbmsc();
 
-    nh.getHardware()->setConnection(server, serverPort);
-    nh.initNode();
-
-    // Another way to get IP
-    Serial.print("ROS IP = ");
-    Serial.println(nh.getHardware()->getLocalIP());
-
-    // Start to be polite
-    nh.advertise(chatter);
-
-    // 清除缓冲区
-    display.clearDisplay();
-    while(progress < 121)
-    {    
-      // 显示一些文本
-      display.setTextSize(1.5);
-      display.setTextColor(SSD1306_WHITE);
-      display.setCursor(0, 0);
-      display.println(F("    AgileX Robotics"));
-      display.setTextSize(1);
-      display.setCursor(0, 20);
-      display.println(F("     Spatial Teleop"));
-
-      display.display();
-
-      // 显示进度条边框
-      display.drawRoundRect(0, 10, 128, 10, 5, SSD1306_WHITE);
-      // 显示进度
-      display.fillRoundRect(4, 13, progress, 4, 3, SSD1306_WHITE);
-
-
-      // 刷新屏幕
-      display.display();
-      // delay(2); // 延迟一段时间后更新显示
-      progress+=2;
-    }
-    display.clearDisplay();
+    // 初始化屏幕，并加载进度条
+    init_display();
 }
 
 void loop() {
+
+    //远程ota处理
+    ArduinoOTA.handle();  //OTA处理
 
     static bool wifiConnected = false;
     static unsigned long previousMillis = 0;
     const long interval = 100;  // 检查Wi-Fi状态的间隔缩短至100毫秒
 
     unsigned long currentMillis = millis();
-    // Serial.println(WiFi.status());
+    // 当wifi失去连接
     if (WiFi.status() != WL_CONNECTED) {
         if (wifiConnected) {
             wifiConnected = false;
@@ -129,8 +83,6 @@ void loop() {
             delay(50);
         }
 
-        Serial.print("Attempting to connect to WiFi: ");
-        Serial.println(ssid);
         display.clearDisplay();
         display.setTextSize(1.5);
         display.setCursor(0, 0);
@@ -139,6 +91,9 @@ void loop() {
         display.println(ssid);
         display.display();
 
+        // 不断监测文件系统中的wifi名字和密码
+        read_nvs_data(ssid,password);
+        //重连wifi
         WiFi.begin(ssid, password);
 
         // 连接需要时间，所以我们给它300毫秒的时间来尝试连接
@@ -166,8 +121,10 @@ void loop() {
             display.setTextSize(1.5);
             display.setCursor(0, 0);
             display.printf("WiFi: %s",ssid);
-            display.setCursor(0, 20);
+            display.setCursor(0, 10);
             display.printf("IP: %s", ipString.c_str());
+            display.setCursor(0,20);
+            display.printf("hand: %s", hand_name);
             display.display();
             firstConnect = false;
         }
@@ -176,7 +133,7 @@ void loop() {
           previousMillis = currentMillis;
 
           // 读取引脚状态，引脚上拉输入，所以进行逻辑反转
-          int js_state = 1 - digitalRead(js_button);  
+          int js_state = digitalRead(js_button);  
           int button_state_up = 1 - digitalRead(button_up);
           int button_state_down = 1 - digitalRead(button_down);
 
@@ -194,25 +151,14 @@ void loop() {
             DynamicJsonDocument doc(1024);  // 动态分配内存
             doc["x"] = adcValue_x;
             doc["y"] = adcValue_y;
-            doc["js_button"] = js_state;
-            doc["up_button"] = button_state_up;
-            doc["down_button"] = button_state_down;
+            doc["js_button"] = 1 - js_state;
+            doc["up_button"] = 1 - button_state_up;
+            doc["down_button"] = 1 - button_state_down;
             doc["hall_adc"] = adcValue_hall;
             String jsonString;
             serializeJson(doc, jsonString);
             str_msg.data = jsonString.c_str();
-            chatter.publish( &str_msg );
-            if(publish_flag == false)
-            {
-              Serial.println("Start publish ros topic...");
-              publish_flag = true;
-            }
-          } else {
-            if(publish_flag == true)
-            {
-              Serial.println("rosserial node disconnected");
-              publish_flag = false;
-            }
+            chatter->publish( &str_msg );
           }
         
           nh.spinOnce();
@@ -226,12 +172,7 @@ void loop() {
             wifiConnected = false;
             firstConnect = true;
             Serial.println("WiFi lost connection, attempting to reconnect...");
-            // 清除上一次的IP地址打印
-            Serial.print("Previous IP Address cleared: ");
-            Serial.println(WiFi.localIP());
             WiFi.disconnect();  // 断开当前连接
         }
     }
-
   }
-

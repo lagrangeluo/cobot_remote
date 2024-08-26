@@ -18,8 +18,8 @@
 
 // const char* ssid = "mammotion";        // 设置Wi-Fi名称
 // const char* password = "Mamo12345";            // 设置Wi-Fi密码
-// const char* ssid = "CR5-4218-0975";        // 设置Wi-Fi名称
-// const char* password = "1234567890";            // 设置Wi-Fi密码
+// const char* ssid = "iPhone15 pro";        // 设置Wi-Fi名称
+// const char* password = "luojunyu";            // 设置Wi-Fi密码
 const char* ssid = "TP-LINK";        // 设置Wi-Fi名称
 const char* password = "12345678";            // 设置Wi-Fi密码
 
@@ -30,11 +30,9 @@ Freenove_ESP32_WS2812 strip = Freenove_ESP32_WS2812(LEDS_COUNT, LEDS_PIN, CHANNE
 // AsyncWebSocket ws("/aloha");
 
 //ros
-// IPAddress server(10, 12, 11, 179);
-IPAddress server(192,168,85,105);
-
-// IPAddress server(192, 168, 1, 109);
-// IPAddress server(192, 168, 1, 2);
+// IPAddress server(172,20,10,2);
+IPAddress server(192, 168, 85, 105);
+// IPAddress server(192,168,85,107);
 
 uint16_t serverPort = 11411;
 char hello[13] = "hello world!";
@@ -204,7 +202,7 @@ void loop() {
             DynamicJsonDocument doc(1024);  // 动态分配内存
             doc["x"] = adcValue_x;
             doc["y"] = adcValue_y;
-            doc["js_button"] = js_state;
+            doc["js_button"] = 1 - js_state;
             doc["up_button"] = button_state_up;
             doc["down_button"] = button_state_down;
             String jsonString;

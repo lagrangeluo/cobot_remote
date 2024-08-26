@@ -1,0 +1,1 @@
+python3 espota.py  -d -i 192.168.85.101 -p 3232 -r true -f esp32_s3.ino.bin
