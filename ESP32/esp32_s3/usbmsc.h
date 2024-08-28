@@ -13,7 +13,7 @@ USBMSC MSC;
 #define FAT_TBL2B(l, h)    FAT_U8(l), FAT_U8(((l >> 8) & 0xF) | ((h << 4) & 0xF0)), FAT_U8(h >> 4)
 
 #define README_CONTENTS \
-"{\r\n\"ssid\": \"\",\r\n\"password\": \"\",\r\n\"hand\": \"\"\r\n}"
+"{\r\n\"ssid\": \"\",\r\n\"password\": \"\",\r\n\"hand\": \"\",\r\n\"ros_master_ip\": \"\"\r\n}"
 
 static const uint32_t DISK_SECTOR_COUNT = 2 * 8;   // 8KB is the smallest size that windows allow to mount
 static const uint16_t DISK_SECTOR_SIZE = 512;      // Should be 512

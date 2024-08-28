@@ -62,7 +62,7 @@ bool write_nvs_data(char* buffer)
 }
 
 //从nvs读取wifi名字密码，并传递给参数指针
-void read_nvs_data(char* ssid,char* password)
+void read_nvs_data(char* ssid,char* password,char* ros_ip)
 {
   // 打开 NVS 命名空间
   ret = nvs_open("storage", NVS_READWRITE, &my_handle);
@@ -91,6 +91,11 @@ void read_nvs_data(char* ssid,char* password)
                 {
                   const char* password_nvs = doc["password"];
                   strcpy(password, password_nvs);
+                }
+                if(doc["ros_master_ip"] != "")
+                {
+                  const char* ros_master_ip_nvs = doc["ros_master_ip"];
+                  strcpy(ros_ip,ros_master_ip_nvs);
                 }
               } else {
                   Serial.println("Failed to deserialize JSON");
