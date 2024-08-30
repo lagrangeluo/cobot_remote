@@ -1,3 +1,11 @@
+/*
+ * ros_esp32.h
+ *
+ * Created on: 2024
+ * Description:
+ * ros相关代码，其中发布者的名字和ros master的ip地址需要从nvs中读取
+ * Copyright (c) 2024 AgileX Robotics
+ */
 #include <ros.h>
 #include <std_msgs/String.h>
 #include <cstring>  // 需要包含此头文件

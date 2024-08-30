@@ -1,3 +1,11 @@
+/*
+ * usbmsc.h
+ *
+ * Created on: 2024
+ * Description:
+ * 该代码使用fat文件系统初始化文件分区和config文件，再初始化usbmsc设备将该文件系统暴露，并挂载给其他设备
+ * Copyright (c) 2024 AgileX Robotics
+ */
 #include "USB.h"
 #include "USBMSC.h"
 

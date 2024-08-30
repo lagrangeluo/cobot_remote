@@ -1,3 +1,14 @@
+/*
+ * nvs_user.h
+ *
+ * Created on: 2024
+ * Description:
+ * nvs存储相关配置，当前版本的文件系统的内容做不到随用随存，所以将静态存储的参数全部放在nvs存储空间中
+ * 主要功能：
+ * 1. 初始化nvs相关
+ * 2. 读写操作函数，读取到的都是json格式的字符串，然后再进行序列化或者反序列化
+ * Copyright (c) 2024 AgileX Robotics
+ */
 #include "nvs_flash.h"
 #include "nvs.h"
 
@@ -111,6 +122,7 @@ void read_nvs_data(char* ssid,char* password,char* ros_ip)
   }
 }
 
+//从nvs中读取"hand"标签的数据，该标签有“left”和“right”,分别代表左手和右手
 void read_nvs_hand(char* hand_name)
 {
   // 打开 NVS 命名空间
@@ -145,6 +157,7 @@ void read_nvs_hand(char* hand_name)
   }
 }
 
+//判定nvs是否初始化成功
 void init_nvs()
 {
     // 如果NVS分区中没有空闲页面或者找不到NVS版本，可能需要擦除并重新初始化NVS

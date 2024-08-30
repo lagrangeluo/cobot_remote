@@ -1,5 +1,11 @@
-// rgb相关外设
-
+/*
+ * rgb.h
+ *
+ * Created on: 2024
+ * Description:
+ * rgb相关代码
+ * Copyright (c) 2024 AgileX Robotics
+ */
 #include "Freenove_WS2812_Lib_for_ESP32.h"
 
 #define LEDS_COUNT  8
