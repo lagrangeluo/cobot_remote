@@ -60,28 +60,10 @@ Visualization Manager:
       Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
-        All Enabled: false
-        LHB-1A91121A:
-          Value: true
-        LHB-1A91121A_imu:
-          Value: true
-        LHB-84033BFD:
-          Value: true
-        LHB-84033BFD_imu:
-          Value: true
-        LHR-347E0F0A:
-          Value: false
-        LHR-347E0F0A_imu:
-          Value: true
+        All Enabled: true
         LHR-F30CC195:
-          Value: false
-        LHR-F30CC195_imu:
-          Value: true
-        left_hand:
           Value: true
         libsurvive_world:
-          Value: true
-        right_hand:
           Value: true
       Marker Alpha: 1
       Marker Scale: 1
@@ -91,20 +73,8 @@ Visualization Manager:
       Show Names: true
       Tree:
         libsurvive_world:
-          LHB-1A91121A:
-            LHB-1A91121A_imu:
-              {}
-          LHB-84033BFD:
-            LHB-84033BFD_imu:
-              {}
-          LHR-347E0F0A:
-            LHR-347E0F0A_imu:
-              right_hand:
-                {}
           LHR-F30CC195:
-            LHR-F30CC195_imu:
-              left_hand:
-                {}
+            {}
       Update Interval: 0
       Value: true
   Enabled: true

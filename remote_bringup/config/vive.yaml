@@ -1,7 +1,7 @@
 vive:
     world_name: "libsurvive_world"
-    tracker_left: "LHR-F30CC195_imu"
-    tracker_right: "LHR-347E0F0A_imu"
+    tracker_left: "LHR-F30CC195"
+    tracker_right: "LHR-347E0F0A"
     teleop_base_left: "tracker_base_left"
     teleop_base_right: "tracker_base_right"
     left_hand: "left_hand"
@@ -9,8 +9,11 @@ vive:
     base_station_1: ""
     base_station_2: ""
 
-    esp32_topic_name: "/esp32_json_string"
-    joystick_topic: "/joystick"
+    esp32_topic_name_l: "/esp32_json_string_left"
+    esp32_topic_name_r: "/esp32_json_string_right"
+    joystick_topic_l: "/joystick_l"
+    joystick_topic_r: "/joystick_r"
+    control_joystick: "/joystick_l"
     cmd_left_name: "/master2_pos_back"
     cmd_right_name: "/master1_pos_back"
 

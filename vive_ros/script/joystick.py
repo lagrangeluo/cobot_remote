@@ -10,17 +10,24 @@ from survive_publisher.msg import joystick
 class joystick_node:
     def __init__(self):
         # uri and topic name
-        self.topic_name = rospy.get_param('/vive/esp32_topic_name', '/esp32_json_string')
-        self.pub_name = rospy.get_param('/vive/joystick_topic', '/joystick')
+        self.topic_name_l = rospy.get_param('/vive/esp32_topic_name_l', '/esp32_json_string_left')
+        self.topic_name_r = rospy.get_param('/vive/esp32_topic_name_r', '/esp32_json_string_right')
+        self.pub_name_l = rospy.get_param('/vive/joystick_topic_l', '/joystick_l')
+        self.pub_name_r = rospy.get_param('/vive/joystick_topic_l', '/joystick_r')
+        
         # param
         self.middle_value = rospy.get_param('/vive/middle_value', 2420)
         self.deadband = rospy.get_param('/vive/deadband',100)
-        self.button_press_time = rospy.get_param('/vive/button_press_time',25)
+        self.button_press_time = rospy.get_param('/vive/button_press_time',20)
         self.button_single_press = rospy.get_param('/vive/button_single_press',4)
 
         # self.topic_pub = rospy.Publisher(self.topic_name, String, queue_size=10)
-        self.esp32_sub = rospy.Subscriber(self.topic_name, String, self.esp32_json_callback)
-        self.js_pub = rospy.Publisher(self.pub_name,joystick,queue_size=5)
+        self.esp32_sub_l = rospy.Subscriber(self.topic_name_l, String, self.esp32_json_callback_l)
+        self.esp32_sub_r = rospy.Subscriber(self.topic_name_r, String, self.esp32_json_callback_r)
+        self.esp32_pub_l = rospy.Publisher("esp32_master_fb_left", String,queue_size=5)
+        self.esp32_pub_r = rospy.Publisher("esp32_master_fb_right", String,queue_size=5)
+        self.js_pub_l = rospy.Publisher(self.pub_name_l,joystick,queue_size=5)
+        self.js_pub_r = rospy.Publisher(self.pub_name_r,joystick,queue_size=5)
 
         # flag
         self.button_dic = {'up':0,'down':0,'js':0}
@@ -29,12 +36,23 @@ class joystick_node:
         self.up_down_cnt = 0
         self.up_down_press = False
 
+        # 设置定时器，每0.5秒（即2Hz）执行一次回调函数
+        rospy.Timer(rospy.Duration(0.5), self.timer_callback)
+
+    def timer_callback(self,event):
+        # 在定时器回调中发布消息
+        msg = String()
+        msg.data = "This is a message from ros master!"
+
+        self.esp32_pub_l.publish(msg)
+        self.esp32_pub_r.publish(msg)
+
     def apply_deadband(self, increase):
         if abs(increase) > self.deadband:
             return increase - self.deadband if increase > 0 else increase + self.deadband
         return 0
     
-    def resolve_json(self,message):
+    def resolve_json(self,message,hand_name):
         # 解析JSON数据
             try:
                 data = json.loads(message)
@@ -49,7 +67,7 @@ class joystick_node:
                 y_increase = self.apply_deadband(y_increase)
 
                 # 按键数据
-                self.button_dic['js'] = 1 - data.get("js_button", 1) #反转0和1
+                self.button_dic['js'] = data.get("js_button", 1) #反转0和1
                 self.button_dic['up'] = data.get("up_button", 0)
                 self.button_dic['down'] = data.get("down_button", 0)
 
@@ -94,13 +112,18 @@ class joystick_node:
                 joystick_msg.press_js = self.press_dic['js']
                 joystick_msg.press_up_dowm = self.up_down_press
  
-                self.js_pub.publish(joystick_msg)
+                if hand_name=="right":
+                    self.js_pub_r.publish(joystick_msg)
+                elif hand_name=="left":
+                    self.js_pub_l.publish(joystick_msg)
 
             except json.JSONDecodeError as e:
                 rospy.logerr(f"JSON decode error: {e}")
                 
-    def esp32_json_callback(self,msg):
-        self.resolve_json(msg.data)
+    def esp32_json_callback_l(self,msg):
+        self.resolve_json(msg.data,"left")
+    def esp32_json_callback_r(self,msg):
+        self.resolve_json(msg.data,"right")
 
 def main():
     rospy.init_node('websocket_to_ros_node')

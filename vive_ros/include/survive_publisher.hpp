@@ -17,6 +17,8 @@ class survive_ros_node
         void init();
         void joystick_callback(const survive_publisher::joystick::ConstPtr msg);
         void update_hand_frame();
+
+        // 用于判断左手和右手是否存在
         bool if_left_exist();
         bool if_right_exist();
     
@@ -28,12 +30,13 @@ class survive_ros_node
         tf::TransformListener listener;
         geometry_msgs::TransformStamped tracker_static_left;
         geometry_msgs::TransformStamped tracker_static_right;
-        ros::Publisher joint_pub;
+        ros::Publisher esp32_motor_pub;
 
         // tracker and base station name
         std::string world_name;
         std::string tracker_left;
         std::string tracker_right;
+        std::string control_joystick;
         std::string teleop_base_left;
         std::string teleop_base_right;
         std::string left_hand;

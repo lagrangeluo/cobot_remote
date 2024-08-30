@@ -16,6 +16,24 @@
 SurviveSimpleContext *actx = 0;
 std::unique_ptr<ros::NodeHandle> n;
 
+geometry_msgs::Transform tfToGeometryTransform(const tf::Transform& tf_transform)
+{
+    geometry_msgs::Transform msg;
+
+    // 提取平移部分
+    msg.translation.x = tf_transform.getOrigin().x();
+    msg.translation.y = tf_transform.getOrigin().y();
+    msg.translation.z = tf_transform.getOrigin().z();
+
+    // 提取旋转部分
+    tf::Quaternion rotation = tf_transform.getRotation();
+    msg.rotation.x = rotation.x();
+    msg.rotation.y = rotation.y();
+    msg.rotation.z = rotation.z();
+    msg.rotation.w = rotation.w();
+
+    return msg;
+}
 static ros::Publisher& rootJoyPublisher() {
 	static std::unique_ptr<ros::Publisher> root;
 	if(!root) {
@@ -124,6 +142,13 @@ static geometry_msgs::Transform ros_from_pose(const SurvivePose* pose) {
     return tx;
 }
 
+static tf::Transform tf_from_pose(const SurvivePose* pose){
+    tf::Transform tf_transform;
+    tf_transform.setOrigin(tf::Vector3(pose->Pos[0], pose->Pos[1], pose->Pos[2]));
+    tf_transform.setRotation(tf::Quaternion(pose->Rot[1], pose->Rot[2], pose->Rot[3], pose->Rot[0]));
+    return tf_transform;
+}
+
 bool publish_pose(tf::TransformBroadcaster &broadcaster, uint32_t seq, const SurviveSimpleObject *it, FLT time = -1) {
 	SurvivePose pose = {};
 	geometry_msgs::TransformStamped pose_msg = {};
@@ -135,23 +160,34 @@ bool publish_pose(tf::TransformBroadcaster &broadcaster, uint32_t seq, const Sur
 	    time = time == -1 ? timecode : time;
         std::string name = survive_simple_serial_number(it);
 
-		pose_msg.header.seq = seq++;
-		pose_msg.header.stamp = rostime_from_survivetime(time);
-		pose_msg.header.frame_id = "libsurvive_world";
-		pose_msg.child_frame_id = name;
-		pose_msg.transform = ros_from_pose(&pose);
+        tf::Transform world_to_head = tf_from_pose(&pose);
 
-		broadcaster.sendTransform(pose_msg);
+		// pose_msg.header.seq = seq++;
+		// pose_msg.header.stamp = rostime_from_survivetime(time);
+		// pose_msg.header.frame_id = "libsurvive_world";
+		// pose_msg.child_frame_id = name;
+		// pose_msg.transform = ros_from_pose(&pose);
+
+		// broadcaster.sendTransform(pose_msg);
 
 		SurvivePose imu2head;
         survive_simple_object_get_transform_to_imu(it, &imu2head);
         imu2head = InvertPoseRtn(&imu2head);
 
-        pose_msg.header.seq = seq++;
-        pose_msg.header.stamp = rostime_from_survivetime(time);
-        pose_msg.header.frame_id = name;
-        pose_msg.child_frame_id = name + "_imu";
-        pose_msg.transform = ros_from_pose(&imu2head);
+        tf::Transform head_to_imu = tf_from_pose(&imu2head);
+        tf::Transform world_to_imu = world_to_head * head_to_imu;
+
+		pose_msg.header.seq = seq++;
+		pose_msg.header.stamp = rostime_from_survivetime(time);
+		pose_msg.header.frame_id = "libsurvive_world";
+		pose_msg.child_frame_id = name;
+		pose_msg.transform = tfToGeometryTransform(world_to_imu);
+
+        // pose_msg.header.seq = seq++;
+        // pose_msg.header.stamp = rostime_from_survivetime(time);
+        // pose_msg.header.frame_id = name;
+        // pose_msg.child_frame_id = name + "_imu";
+        // pose_msg.transform = ros_from_pose(&imu2head);
 
         broadcaster.sendTransform(pose_msg);
 

@@ -9,7 +9,8 @@ vive:
     base_station_1: ""
     base_station_2: ""
 
-    esp32_topic_name: "/esp32_json_string"
+    esp32_topic_name_l: "/esp32_json_string_left"
+    esp32_topic_name_r: "/esp32_json_string_right"
     joystick_topic: "/joystick"
     cmd_left_name: "/dobot_bringup/srv/MovJ"
     cmd_right_name: ""

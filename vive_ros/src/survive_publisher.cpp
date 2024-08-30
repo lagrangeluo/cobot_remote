@@ -13,6 +13,8 @@ void survive_ros_node::init()
     nh.getParam("/vive/right_hand", right_hand);
     nh.getParam("/vive/teleop_base_left", teleop_base_left);
     nh.getParam("/vive/teleop_base_right", teleop_base_right);
+    nh.getParam("/vive/control_joystick", control_joystick);
+
     nh.getParam("/vive/base_station_1", base_station_1);
     nh.getParam("/vive/base_station_2", base_station_2);
 
@@ -38,8 +40,9 @@ void survive_ros_node::init()
     nh.getParam("/vive/hand_yaw", hand_yaw);
 
 
-    joystick_sub = nh.subscribe("/joystick",5,&survive_ros_node::joystick_callback,this);
-    
+    joystick_sub = nh.subscribe(control_joystick,5,&survive_ros_node::joystick_callback,this);
+    esp32_motor_pub = nh.advertise<std_msgs::String>("/esp32_motor",5);
+
     start_teleop = false;
     start_teleop_state = false;
     // init tracker base transform
@@ -60,15 +63,11 @@ void survive_ros_node::init()
 void survive_ros_node::joystick_callback(const survive_publisher::joystick::ConstPtr msg)
 {
     //如果长按两个按键，更新tracker基座标
-    if(msg->press_up_dowm == true)
-    {
+    if(msg->press_up_dowm == true){
         start_teleop_state = true;
-
     }
-    else
-    {
+    else{
         start_teleop_state = false;
-
     }
 
     //长按js按键，结束模式清除base xyz
@@ -83,7 +82,6 @@ void survive_ros_node::joystick_callback(const survive_publisher::joystick::Cons
         nh.getParam("/vive/base_x", base_x_r);
         nh.getParam("/vive/base_y", base_y_r);
         nh.getParam("/vive/base_z", base_z_r);
-
     }
 }
 
@@ -191,12 +189,21 @@ void survive_ros_node::update_hand_frame()
                 }
             }
 
+            // 开始遥操作，遥操作手柄震动
+            std_msgs::String msg;
+            esp32_motor_pub.publish(msg);
         }
         // pub tracker static tf
-        tracker_static_left.header.stamp = ros::Time::now();
-        broadcaster.sendTransform(tracker_static_left);
-        tracker_static_right.header.stamp = ros::Time::now();
-        broadcaster.sendTransform(tracker_static_right);
+        if(if_left_exist())
+        {
+            tracker_static_left.header.stamp = ros::Time::now();
+            broadcaster.sendTransform(tracker_static_left);
+        }
+        if(if_right_exist())
+        {
+            tracker_static_right.header.stamp = ros::Time::now();
+            broadcaster.sendTransform(tracker_static_right);
+        }
 
     }
     else
@@ -225,7 +232,9 @@ void survive_ros_node::update_hand_frame()
                     base_z_r = trans_left.getOrigin().z();
                     ROS_INFO("base left x: %f , y: %f , z: %f",base_x_r,base_y_r,base_z_r);
                 }
-
+                // 开始遥操作，遥操作手柄震动
+                std_msgs::String msg;
+                esp32_motor_pub.publish(msg);
             }
             catch(tf::TransformException &ex){
                 ROS_ERROR("%s", ex.what());

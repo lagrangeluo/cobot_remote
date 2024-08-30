@@ -27,7 +27,8 @@ struct param_t
     std::string left_arm_link;
     std::string right_arm_link;
     //摇杆话题名字
-    std::string joystick_topic;
+    std::string joystick_topic_l;
+    std::string joystick_topic_r;
     //机械臂控制话题名字
     std::string cmd_left_name;
     std::string cmd_right_name;
