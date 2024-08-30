@@ -1,3 +1,12 @@
+/*
+ * motor.h
+ *
+ * Created on: 2024
+ * Description:
+ * 振动马达相关的函数定义
+ * Copyright (c) 2024 AgileX Robotics
+ */
+ 
 #define motor_pin   44
 
 //初始化震动马达
