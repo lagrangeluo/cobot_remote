@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -g  -shared  -o ../../lib.linux-x86_64-cpython-310/airbot.cpython-310-x86_64-linux-gnu.so CMakeFiles/airbot.dir/src/main.cpp.o  -Wl,-rpath,/home/embodyrobotics/miniconda3/envs/frrobot/lib /home/embodyrobotics/miniconda3/envs/frrobot/lib/libpython3.10.so -lairbot_play 

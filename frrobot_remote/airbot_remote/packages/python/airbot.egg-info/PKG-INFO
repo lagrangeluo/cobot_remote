@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: airbot
+Version: 2.9.0
+Summary: UNKNOWN
+Home-page: UNKNOWN
+Author: Beiwen Tian
+Author-email: george@discover-robotics.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >=3.7
+Provides-Extra: test

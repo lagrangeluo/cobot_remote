@@ -1,0 +1,5 @@
+/home/embodyrobotics/remote_ws/src/cobot_remote/frrobot_remote/airbot_remote/packages/python/build/temp.linux-x86_64-3.8/airbot/CMakeFiles/rebuild_cache.dir
+/home/embodyrobotics/remote_ws/src/cobot_remote/frrobot_remote/airbot_remote/packages/python/build/temp.linux-x86_64-3.8/airbot/CMakeFiles/edit_cache.dir
+/home/embodyrobotics/remote_ws/src/cobot_remote/frrobot_remote/airbot_remote/packages/python/build/temp.linux-x86_64-3.8/airbot/CMakeFiles/airbot.dir
+/home/embodyrobotics/remote_ws/src/cobot_remote/frrobot_remote/airbot_remote/packages/python/build/temp.linux-x86_64-3.8/airbot/pybind11/CMakeFiles/rebuild_cache.dir
+/home/embodyrobotics/remote_ws/src/cobot_remote/frrobot_remote/airbot_remote/packages/python/build/temp.linux-x86_64-3.8/airbot/pybind11/CMakeFiles/edit_cache.dir

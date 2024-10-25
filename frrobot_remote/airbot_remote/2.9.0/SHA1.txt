@@ -1,0 +1,11 @@
+66bb05a7bca9094e43d4f1774590f2e0aaac10aa  ./CHANGELOG
+86cec5680034f68a2c48965f6e46b80315b84155  ./packages/airbot_manufacture_2.9.0-e06ec28_amd64.deb
+e96878c482535acfd15f18c6f512121bc64b703a  ./packages/airbot_tools_2.9.0_amd64.deb
+c8dc9e09d7a6536453c97897a33abd688beb544a  ./packages/airbot_aloha_2.9.0_amd64.deb
+3f451cc60b41740a89bf9b47fa86fce7a29a64eb  ./packages/ros-noetic-ros-interface_2.9.0-0focal_amd64.deb
+4bb08f913c5a626bf66db3f904188471d4b4254d  ./packages/python.zip
+7202400fefdfc4d24dedd2681445f6cc14faabab  ./packages/airbot_play_2.9.0_amd64.deb
+4197c766da4ba3ad4393affcfd2a28871d90d4b4  ./SHA1.txt
+7fe5a3a8ba9cd78698a1d7f537042dc911cf0b84  ./firmwares/arm-interface-board-base.bin
+2f6891c48807d08b3cc0ccdb615eb51838cad318  ./firmwares/BLDC_4_ChibiOS.bin
+bd2ed395f5b22cb1edd677b781ebd27b7ee5fc40  ./firmwares/arm-interface-board-end.bin

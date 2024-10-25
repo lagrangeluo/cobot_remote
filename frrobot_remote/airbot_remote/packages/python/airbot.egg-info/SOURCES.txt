@@ -1,0 +1,8 @@
+pyproject.toml
+setup.py
+airbot.egg-info/PKG-INFO
+airbot.egg-info/SOURCES.txt
+airbot.egg-info/dependency_links.txt
+airbot.egg-info/not-zip-safe
+airbot.egg-info/requires.txt
+airbot.egg-info/top_level.txt

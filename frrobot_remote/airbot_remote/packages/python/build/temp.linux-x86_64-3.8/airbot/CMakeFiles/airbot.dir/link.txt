@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -g  -shared  -o ../../lib.linux-x86_64-3.8/airbot.cpython-38-x86_64-linux-gnu.so CMakeFiles/airbot.dir/src/main.cpp.o  /usr/lib/x86_64-linux-gnu/libpython3.8.so -lairbot_play 

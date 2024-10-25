@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/embodyrobotics/remote_ws/src/cobot_remote/airbot_remote/packages/python/build/temp.linux-x86_64-cpython-310/airbot",
+  "command": "/usr/bin/c++  -DVERSION_INFO=2.9.0 -Dairbot_EXPORTS -I/usr/include/eigen3 -isystem /home/embodyrobotics/remote_ws/src/cobot_remote/airbot_remote/packages/python/pybind11/include -isystem /home/embodyrobotics/miniconda3/envs/frrobot/include/python3.10  -g -fPIC -fvisibility=hidden   -std=gnu++17 -o CMakeFiles/airbot.dir/src/main.cpp.o -c /home/embodyrobotics/remote_ws/src/cobot_remote/airbot_remote/packages/python/src/main.cpp",
+  "file": "/home/embodyrobotics/remote_ws/src/cobot_remote/airbot_remote/packages/python/src/main.cpp"
+}
+]
