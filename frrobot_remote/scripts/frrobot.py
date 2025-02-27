@@ -6,11 +6,11 @@ from std_msgs.msg import String
 import signal
 import sys
 import math
+import socket
 from scipy.spatial.transform import Rotation
 
 import time
 import Robot
-
 
 
 P1=[-135,-121,322,-147,28,68]
@@ -34,6 +34,8 @@ def signal_handler(signal,frame):
     print('You pressed Ctrl + C!')
     #stop the timer update thread
     #rospy.signal_shutdown('Shutting down...')
+    print('Server shutting down...')
+    socket.close()
     sys.exit(0)
 
 def transform(teach_arm_tcp,qua):
@@ -60,16 +62,42 @@ user = robot.GetActualWObjNum()[1]
 
 robot.SetLimitPositive(p_limit)
 robot.SetLimitNegative(n_limit)
+
+socket = socket.socket()
+reconnect_count = 0
+# 循环尝试连接
+while True:
+    try:
+        socket.connect(('localhost', 8484))
+        print("成功连接到服务器")
+        break  # 连接成功后跳出循环
+    except socket.error:
+        # 等待后重试
+        time.sleep(0.1)  
+        # 每秒打印一次重连信息
+        if reconnect_count >10:
+            print("无法连接到服务器，正在重连...")
+            reconnect_count = 0
+        else:
+            reconnect_count+=1
+
     
+def timer_callback(event):
+    actual_pose = robot.GetActualTCPPose(flag = 1)
+    print("actual_pose:",actual_pose)
+    json_data = json.dump(actual_pose)
+    socket.send(json_data)
+
+
 def fr_callback(msg):
     json_data = msg.data
     pos_ctl = json.loads(json_data)
     #rospy.info("GET cmd msg: %s",pos_ctl)
     #robot.MoveL(J1,P1,0,0,100.0,180.0,100.0,-1.0,eP1,0,1 ,dP1)   #笛卡尔空间直线运动
-    robot.ResetAllError()
+    #robot.ResetAllError()
     robot.MoveCart(pos_ctl,tool,user,vel=100,acc=70,blendT=100)       #笛卡尔空间点到点运动
     actual_pose = robot.GetActualTCPPose(flag = 1)
-    print("actual_pose:",actual_pose)
+    
 
     #robot.ServoCart(0,pos_ctl,acc=50,vel=20,filterT=0.1)
     #robot.MoveL(pos_ctl,tool,user,vel=20,acc=50,blendR=50)
@@ -79,4 +107,5 @@ if __name__ == '__main__':
     # 初始化ros节点
     rospy.init_node("remote_encoder")
     cmd_sub = rospy.Subscriber("/frrobot_cmd", String, fr_callback)
+    rospy.Timer(rospy.Duration(0.1), timer_callback)
     rospy.spin()

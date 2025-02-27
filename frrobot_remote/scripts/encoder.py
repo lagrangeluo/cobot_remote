@@ -24,9 +24,12 @@ x_base = -300
 y_base = 0
 z_base = 200
 
-rx_base = 180
-ry_base = 45
-rz_base = 0
+#rx_base = 180
+#ry_base = 45
+#rz_base = 0
+rx_base = -140
+ry_base = 32
+rz_base = 57
 
 bot = airbot.create_agent(
     end_mode="encoder", bigarm_type="encoder", forearm_type="encoder"

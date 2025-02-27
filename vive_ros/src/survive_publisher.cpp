@@ -41,7 +41,6 @@ void survive_ros_node::init()
 
 
     joystick_sub = nh.subscribe(control_joystick,5,&survive_ros_node::joystick_callback,this);
-    esp32_motor_pub = nh.advertise<std_msgs::String>("/esp32_motor",5);
 
     start_teleop = false;
     start_teleop_state = false;
@@ -189,9 +188,6 @@ void survive_ros_node::update_hand_frame()
                 }
             }
 
-            // 开始遥操作，遥操作手柄震动
-            std_msgs::String msg;
-            esp32_motor_pub.publish(msg);
         }
         // pub tracker static tf
         if(if_left_exist())
@@ -232,9 +228,6 @@ void survive_ros_node::update_hand_frame()
                     base_z_r = trans_left.getOrigin().z();
                     ROS_INFO("base left x: %f , y: %f , z: %f",base_x_r,base_y_r,base_z_r);
                 }
-                // 开始遥操作，遥操作手柄震动
-                std_msgs::String msg;
-                esp32_motor_pub.publish(msg);
             }
             catch(tf::TransformException &ex){
                 ROS_ERROR("%s", ex.what());

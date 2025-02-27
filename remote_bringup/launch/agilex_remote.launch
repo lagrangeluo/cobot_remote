@@ -2,12 +2,12 @@
 
     <rosparam command="load" file="$(find remote_bringup)/config/agilex.yaml" />
 
-    <!--vive tracker模块-->>
+    <!--vive tracker模块-->
     <node name="vive_publisher" type="survive_publisher_node" pkg="survive_publisher" output="screen" />
 
     <node name="vive_ros_node" type="survive_publisher" pkg="survive_publisher" output="screen" />
 
-    <!--摇杆模块-->>
+    <!--摇杆模块-->
     <node name="rosserial_node" type="serial_node.py" pkg="rosserial_python" output="screen" respawn="true">
         <param name = "port" type="string" value="tcp" />
     </node>

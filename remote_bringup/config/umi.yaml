@@ -1,0 +1,54 @@
+vive:
+    world_name: "libsurvive_world"
+    tracker_left: "LHR-F30CC195"
+    tracker_right: "LHR-347E0F0A"
+    teleop_base_left: "tracker_base_left"
+    teleop_base_right: "tracker_base_right"
+    left_hand: "left_hand"
+    right_hand: "right_hand"
+    base_station_1: ""
+    base_station_2: ""
+
+    esp32_topic_name_l: "/esp32_json_string_left"
+    esp32_topic_name_r: "/esp32_json_string_right"
+    joystick_topic_l: "/joystick_l"
+    joystick_topic_r: "/joystick_r"
+    control_joystick: "/joystick_l"
+    cmd_left_name: "/master2_pos_back"
+    cmd_right_name: "/master1_pos_back"
+
+    #joystick param
+    button_press_time: 25
+    button_single_press: 4
+
+    #机械臂初始化tcp坐标系
+    base_x: 0.01
+    base_y: 0
+    base_z: 0.01
+    base_roll: 0
+    base_pitch: 0
+    base_yaw: 0
+
+    #hand相对追踪器的坐标
+    hand_x: 0
+    hand_y: 0
+    hand_z: -0.05
+    hand_roll: 0
+    hand_pitch: 0
+    hand_yaw: 3.14
+
+    #遥操作比例尺
+    scale_x: 1
+    scale_y: 1
+    scale_z: 1
+
+    joint_num: 7
+
+    init_angle:
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
