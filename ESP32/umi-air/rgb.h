@@ -32,22 +32,22 @@ void set_rgb_black(){
     strip.show();
 }
 void set_rgb_white(){
-    strip.setLedColorData(0, 255, 255, 255);
+    strip.setLedColorData(0, 25, 25, 25);
     strip.show();
 }
 void set_rgb_red(){
-    strip.setLedColorData(0, 255, 0, 0);
+    strip.setLedColorData(0, 100, 0, 0);
     strip.show();
 }
 void set_rgb_green(){
-    strip.setLedColorData(0, 0, 255, 0);
+    strip.setLedColorData(0, 0, 100, 0);
     strip.show();
 }
 void set_rgb_blue(){
-    strip.setLedColorData(0, 0, 0, 255);
+    strip.setLedColorData(0, 0, 0, 100);
     strip.show();
 }
 void set_rgb_yellow(){
-    strip.setLedColorData(0, 255, 255, 0);
+    strip.setLedColorData(0, 50, 50, 0);
     strip.show();
 }

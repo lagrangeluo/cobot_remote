@@ -18,7 +18,7 @@
 
 // 定义 OLED 显示屏的宽度和高度，适用于 128x32 OLED
 #define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 32
+#define SCREEN_HEIGHT 64
 // 定义 I2C 引脚
 #define SDA_PIN     5
 #define SCL_PIN     6
@@ -34,16 +34,16 @@
 float batteryPercentage = 75.0;  // 假设电池百分比，实际可以根据电压值计算
 
 // 声明一个 OLED 显示屏对象
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // 显示的电池电压信息
 char* battery_info = (char*)malloc(32 * sizeof(char));
 
 void init_display()
 {
     // 初始化 I2C 总线
-    Wire.begin(SDA_PIN, SCL_PIN);
+    //Wire.begin(SDA_PIN, SCL_PIN);
     // 初始化显示屏
-    if (!display.begin(SCREEN_ADDRESS)) {
+    if (!display.begin(SSD1306_SWITCHCAPVCC,SCREEN_ADDRESS)) {
       Serial.println(F("SSD1306 allocation failed"));
       for (;;);
     }
@@ -54,42 +54,42 @@ void init_display()
     while(progress < 121)
     {
       // 显示一些文本
-      display.setTextSize(1.5);
-      display.setTextColor(SSD1306_WHITE);
-      display.setCursor(0, 0);
-      display.println(F("    AgileX Robotics"));
       display.setTextSize(1);
-      display.setCursor(0, 20);
-      display.println(F("     Spatial Teleop"));
+      display.setTextColor(SSD1306_WHITE);
+      display.setCursor(0, 8);
+      display.println(F("  MagicCube Robotics"));
+      display.setTextSize(1);
+      display.setCursor(0, 35);
+      display.println(F("    Spatial Teleop"));
 
       display.display();
       // 显示进度条边框
-      display.drawRoundRect(0, 10, 128, 10, 5, SSD1306_WHITE);
+      display.drawRoundRect(0, 20, 128, 10, 5, SSD1306_WHITE);
       // 显示进度
-      display.fillRoundRect(4, 13, progress, 4, 3, SSD1306_WHITE);
+      display.fillRoundRect(4, 23, progress, 4, 3, SSD1306_WHITE);
       // 刷新屏幕
       display.display();
-      // delay(2); // 延迟一段时间后更新显示
+      //delay(2); // 延迟一段时间后更新显示
       progress+=2;
     }
     display.clearDisplay();
 }
 
 //显示wifi的连接状态
-void display_wifi_status(char* ssid,char* hand_name)
-{
-  // 显示wifi连接状态
-  IPAddress localIP = WiFi.localIP();
-  String ipString = localIP.toString();
-  display.clearDisplay();
-  display.setTextSize(1.5);
-  display.setCursor(0, 0);
-  display.printf("WiFi: %s",ssid);
-  display.setCursor(0, 10);
-  display.printf("IP: %s", ipString.c_str());
-  display.setCursor(0,20);
-  display.printf("hand: %s", hand_name);
-}
+// void display_wifi_status(char* ssid,char* hand_name)
+// {
+//   // 显示wifi连接状态
+//   IPAddress localIP = WiFi.localIP();
+//   String ipString = localIP.toString();
+//   display.clearDisplay();
+//   display.setTextSize(1.5);
+//   display.setCursor(0, 0);
+//   display.printf("WiFi: %s",ssid);
+//   display.setCursor(0, 10);
+//   display.printf("IP: %s", ipString.c_str());
+//   display.setCursor(0,20);
+//   display.printf("hand: %s", hand_name);
+// }
 
 //显示电压的数值
 void display_battery()
@@ -110,13 +110,25 @@ void displayBatteryIcon(float batteryPercentage) {
   display.drawRect(BATTERY_X, BATTERY_Y, BATTERY_WIDTH, BATTERY_HEIGHT, SSD1306_WHITE);
 
   // 绘制电池头部
-  display.drawRect(BATTERY_X + BATTERY_WIDTH, BATTERY_Y + 3, 3, 4, SSD1306_WHITE);
+  display.fillRect(BATTERY_X + BATTERY_WIDTH, BATTERY_Y + (BATTERY_HEIGHT / 4), 3, BATTERY_HEIGHT / 2, SSD1306_WHITE);
 
-  // 计算电量格数
-  int numBars = (batteryPercentage / 100.0) * 4;  // 四格电量
+  // 计算填充区域宽度（确保在 0 ~ BATTERY_WIDTH - 2 之间）
+  int fillWidth = (batteryPercentage / 100.0) * (BATTERY_WIDTH - 2);
+  if (fillWidth > BATTERY_WIDTH - 2) fillWidth = BATTERY_WIDTH - 2;  // 避免超出范围
+  if (fillWidth < 0) fillWidth = 0;  // 避免负值
 
-  // 填充电量格
-  for (int i = 0; i < numBars; i++) {
-    display.fillRect(BATTERY_X + 2 + i * 4, BATTERY_Y + 2, 3, BATTERY_HEIGHT - 4, WHITE);
-  }
+  // 填充电量矩形，使电量指示更加连续
+  display.fillRect(BATTERY_X + 2, BATTERY_Y + 2, fillWidth, BATTERY_HEIGHT - 4, SSD1306_WHITE);
 }
+
+//显示等待wifi连接页面
+// void displayWaitWifi()
+// {
+//   display.clearDisplay();
+//   display.setTextSize(1.5);
+//   display.setCursor(0, 0);
+//   display.println("Waiting for WiFi: ");
+//   display.setCursor(0, 15);
+//   display.println(ssid);
+//   display.display();
+// }

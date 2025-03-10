@@ -16,20 +16,27 @@ static BLEUUID serviceUUID("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
 // The characteristic of the remote service we are interested in.
 static BLEUUID charUUID("beb5483e-36e1-4688-b7f5-ea07361b26a8");
 
+// 标志位，表示开始一次蓝牙连接
 static boolean doConnect = false;
+// 标志位，表示当前的蓝牙连接状态
 static boolean connected = false;
+// 标志位，表示开始蓝牙扫描
 static boolean doScan = false;
+// 蓝牙Characteristic特征值
 static BLERemoteCharacteristic *pRemoteCharacteristic;
+// BLE蓝牙的client设备实例指针
 static BLEAdvertisedDevice *myDevice;
+
+// 使用蓝牙设备的主任务回调函数
+typedef String (* BLEClientCallbackFuncPtr)(void);
+// 蓝牙设备断联后的回调函数
+typedef void (* BLEClientErrorFuncPtr)(void);
 
 static void notifyCallback(BLERemoteCharacteristic *pBLERemoteCharacteristic, uint8_t *pData, size_t length, bool isNotify) {
   Serial.print("Notify callback for characteristic ");
   Serial.print(pBLERemoteCharacteristic->getUUID().toString().c_str());
   Serial.print(" of data length ");
   Serial.println(length);
-  Serial.print("data: ");
-  Serial.write(pData, length);
-  Serial.println();
 }
 
 class MyClientCallback : public BLEClientCallbacks {
@@ -92,6 +99,7 @@ bool connectToServer() {
   connected = true;
   return true;
 }
+
 /**
  * Scan for BLE servers and find the first one that advertises the service we are looking for.
  */
@@ -107,7 +115,6 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
     if (advertisedDevice.haveServiceUUID() && advertisedDevice.isAdvertisingService(serviceUUID)) {
       
       BLEDevice::getScan()->stop();
-      Serial.println("We get the right ble device");
       myDevice = new BLEAdvertisedDevice(advertisedDevice);
       // 标志位置位，触发蓝牙连接
       doConnect = true;
@@ -130,7 +137,7 @@ void start_scan() {
   pBLEScan->setInterval(1349);
   pBLEScan->setWindow(449);
   pBLEScan->setActiveScan(true);
-  pBLEScan->start(5, true);
+  pBLEScan->start(3, true);
   // 如果扫描完成后没有匹配到目标设备，继续扫描
   if (doConnect == false)
   {
@@ -138,16 +145,17 @@ void start_scan() {
   }
 }
 
-void setup() {
-  Serial.begin(115200);
-  Serial.println("Starting Arduino BLE Client application...");
+void init_BLE() {
   BLEDevice::init("");
+  Serial.println("Starting Arduino BLE Client application...");
   start_scan();
-  Serial.println("Finished setup");
+  Serial.println("Finished BLE Client Init");
 }
 
-// This is the Arduino main loop function.
-void loop() {
+// 蓝牙设备循环函数，实现以下功能：
+// 1.不断循环检查蓝牙连接是否异常，如果有异常则重新扫描并连接
+// 2.蓝牙连接正常后，运行callback回调功能函数
+void BLEDeviceLoop(BLEClientCallbackFuncPtr callback, BLEClientErrorFuncPtr error_handle, int time_interval) {
 
   // 执行蓝牙连接程序的标识符，一次连接只需要运行一次
   if (doConnect == true) {
@@ -159,20 +167,21 @@ void loop() {
     doConnect = false;
   }
 
-  // 当蓝牙连接状态正常，就一直执行此主函数循环
+  // 当蓝牙连接状态正常，执行回调函数
   if (connected) {
-    //String newValue = "Timcount: " + String(millis() / 1000);
-    String newValue = ("Timcount: 123");
-    Serial.println("Setting new characteristic value to \"" + newValue + "\"");
-
-    // Set the characteristic's value to be the array of bytes that is actually a string.
-    pRemoteCharacteristic->writeValue(newValue.c_str(), newValue.length());
-    //sendDataToServer(pRemoteCharacteristic, "Hello from ESP32!")
+    // 执行回调函数
+    String json_string = callback();
+    // 通信循环测试
+    // String newValue = "Timcount: 123");
+    Serial.println("Json value to \"" + json_string + "\"");
+    // // 向服务端写入数值
+    pRemoteCharacteristic->writeValue(json_string.c_str(), json_string.length());
   }
   // 当蓝牙断开连接，执行重新扫描函数 
   else if (doScan) {
     Serial.println("start scan for bluetooth device");
     start_scan();
+    error_handle();
   }
-  delay(1000);  // Delay a second between loops.
+  delay(time_interval);  // Delay a second between loops.
 }  // End of loop
