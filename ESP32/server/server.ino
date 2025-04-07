@@ -24,7 +24,7 @@
 ros::NodeHandle nh;
 // 创建 ROS 话题
 std_msgs::String ros_msg;
-ros::Publisher json_pub("json_data", &ros_msg);
+ros::Publisher json_pub("esp32_json_data", &ros_msg);
 
 
 // 解析 JSON 数据

@@ -1,0 +1,18 @@
+<launch>
+
+    <rosparam command="load" file="$(find remote_bringup)/config/umi.yaml" />
+
+    <!--vive tracker模块-->
+    <node name="vive_publisher" type="survive_publisher_node" pkg="survive_publisher" output="screen" />
+
+    <node name="vive_ros_node" type="survive_publisher" pkg="survive_publisher" output="screen" />
+
+    <!--手柄模块-->
+    <include file="$(find remote_bringup)/launch/joystick.launch"/>
+
+    <!--机械臂接口适配模块-->
+    <node name="rviz_sim_remote" type="rviz_sim_node" pkg="arm_adapter" output="screen" />
+
+    <!--rviz-->
+    <node name="remote_rviz" pkg="rviz" type="rviz" args="-d $(find remote_bringup)/rviz/vive.rviz" />
+</launch>

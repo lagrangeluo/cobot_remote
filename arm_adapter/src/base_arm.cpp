@@ -37,10 +37,12 @@ bool ArmCommonInterface<arm_cmd_type>::if_left_exist()
 template<typename arm_cmd_type>
 bool ArmCommonInterface<arm_cmd_type>::if_right_exist()
 {
-    if(param_list.cmd_right_name == "" || param_list.right_arm_link == "")
+    if(param_list.cmd_right_name == "" || param_list.right_arm_link == ""){
         return false;
-    else
+    }
+    else{
         return true;
+    }
 }
 
 // 初始化ros接口
@@ -102,7 +104,7 @@ void ArmCommonInterface<arm_cmd_type>::update_arm()
         }
 
         if(if_right_exist())
-        {
+        {        
             ros::Time now = ros::Time::now();
             transform_right.tf_trans = tfBuffer.lookupTransform(param_list.base_link_r, param_list.right_arm_link, now - timeout,timeout);
 

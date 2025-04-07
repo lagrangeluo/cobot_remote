@@ -55,9 +55,9 @@ String MainTaskLoop(){
   // 主逻辑循环，当通信正常的情况下不断轮询执行，最终返回json字符串作为esp32向外发送的字符串
   // 绿灯代表通信正常
   set_rgb_green();
-  // 读取引脚状
-  int button_state_left = digitalRead(button_up);
-  int button_state_right = digitalRead(button_down);
+  // 读取引脚状，因为按键部分是默认拉高的，所以需要反转
+  int button_state_left = 1-digitalRead(button_left);
+  int button_state_right = 1-digitalRead(button_right);
 
   int adcValue_bat = analogRead(Bat_sample);
   float batteryVoltage = (adcValue_bat / 4095.0) * 3.3 * 2;

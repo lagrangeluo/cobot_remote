@@ -144,6 +144,7 @@ target_link_libraries(base_arm_lib
 add_executable(arx_arm_node src/arx_lite.cpp)
 # add_executable(dobot_arm_node src/dobot_cr5.cpp)
 add_executable(agilex_node src/agilex.cpp)
+add_executable(rviz_sim_node src/rviz_sim.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -156,6 +157,7 @@ add_executable(agilex_node src/agilex.cpp)
 add_dependencies(arx_arm_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 # add_dependencies(dobot_arm_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(agilex_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(rviz_sim_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 
@@ -163,11 +165,11 @@ target_link_libraries(arx_arm_node
   base_arm_lib
   ${catkin_LIBRARIES}
 )
-# target_link_libraries(dobot_arm_node
-#   base_arm_lib
-#   ${catkin_LIBRARIES}
-# )
 target_link_libraries(agilex_node
+  base_arm_lib  
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(rviz_sim_node
   base_arm_lib  
   ${catkin_LIBRARIES}
 )

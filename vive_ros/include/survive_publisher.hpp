@@ -9,13 +9,13 @@
 #include <tf/transform_listener.h>
 
 #include "arm_control/PosCmd.h"
-#include "survive_publisher/joystick.h"
+#include "survive_publisher/umijoy.h"
 
 class survive_ros_node
 {
     public:
         void init();
-        void joystick_callback(const survive_publisher::joystick::ConstPtr msg);
+        void joystick_callback(const survive_publisher::umijoy::ConstPtr msg);
         void update_hand_frame();
 
         // 用于判断左手和右手是否存在

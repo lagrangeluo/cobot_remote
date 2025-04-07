@@ -1,10 +1,11 @@
 <launch>
 
-    <rosparam command="load" file="$(find remote_bringup)/config/vive.yaml" />
+    <rosparam command="load" file="$(find remote_bringup)/config/umi.yaml" />
 
     <node name="rosserial_node" type="serial_node.py" pkg="rosserial_python" output="screen" respawn="true">
-        <param name = "port" type="string" value="tcp" />
+        <param name = "port" type="string" value="/dev/ttyACM0" />
+        <param name = "_baud" type="int" value="115200" />
     </node>
-    <node name="joystick_publisher" type="joystick.py" pkg="survive_publisher" output="screen">
+    <node name="joystick_publisher" type="umi_joy.py" pkg="survive_publisher" output="screen">
     </node>
 </launch>

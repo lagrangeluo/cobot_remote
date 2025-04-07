@@ -22,8 +22,8 @@ class joystick_node:
         # self.topic_pub = rospy.Publisher(self.topic_name, String, queue_size=10)
         self.esp32_sub_l = rospy.Subscriber(self.topic_name_l, String, self.esp32_json_callback_l)
         self.esp32_sub_r = rospy.Subscriber(self.topic_name_r, String, self.esp32_json_callback_r)
-        self.esp32_pub_l = rospy.Publisher("esp32_master_fb_left", String,queue_size=5)
-        self.esp32_pub_r = rospy.Publisher("esp32_master_fb_right", String,queue_size=5)
+        # self.esp32_pub_l = rospy.Publisher("esp32_master_fb_left", String,queue_size=5)
+        # self.esp32_pub_r = rospy.Publisher("esp32_master_fb_right", String,queue_size=5)
         self.js_pub_l = rospy.Publisher(self.pub_name_l,umijoy,queue_size=5)
         self.js_pub_r = rospy.Publisher(self.pub_name_r,umijoy,queue_size=5)
 
@@ -31,19 +31,20 @@ class joystick_node:
         self.button_dic = {'left':0,'right':0}
         self.press_dic = {'left':False,'right':False}
         self.press_cnt = {'left':0,'right':0}
-        self.left_right_cnt = 0
-        self.up_down_press = False
+        # # 连续长按两个按键
+        # self.left_right_cnt = 0
+        # self.up_down_press = False
 
-        # 设置定时器，每0.5秒（即2Hz）执行一次回调函数
-        rospy.Timer(rospy.Duration(0.5), self.timer_callback)
+        # # 设置定时器，每0.5秒（即2Hz）执行一次回调函数
+        # rospy.Timer(rospy.Duration(0.5), self.timer_callback)
 
-    def timer_callback(self,event):
-        # 在定时器回调中发布消息
-        msg = String()
-        msg.data = "This is a message from ros master!"
+    # def timer_callback(self,event):
+    #     # 在定时器回调中发布消息
+    #     msg = String()
+    #     msg.data = "This is a message from ros master!"
 
-        self.esp32_pub_l.publish(msg)
-        self.esp32_pub_r.publish(msg)
+    #     self.esp32_pub_l.publish(msg)
+    #     self.esp32_pub_r.publish(msg)
 
     def apply_deadband(self, increase):
         if abs(increase) > self.deadband:
@@ -71,26 +72,14 @@ class joystick_node:
 
                     if button == 0:
                         self.press_cnt[key] = 0
-                        self.press_dic[key] = False
                     if button == 1 and self.press_cnt[key] < self.button_single_press:
                         self.press_cnt[key] += 1
                     if self.press_cnt[key] == self.button_single_press:
-                        self.press_dic[key] = True
-                        self.press_cnt[key] += 1
+                        self.press_dic[key] = not self.press_dic[key]
+                        self.press_cnt[key] += 1                
                 
-                if self.button_dic['left'] == 1 and self.button_dic['right'] == 1 and self.left_right_cnt<self.button_press_time:
-                    self.left_right_cnt += 1
-                elif self.button_dic['left'] == 0 or self.button_dic['right'] == 0:
-                    self.left_right_cnt = 0
-                if self.left_right_cnt == self.button_press_time:
-                    self.up_down_press = not self.up_down_press
-                    self.left_right_cnt += 1
-                
-                
-                
-                joystick_msg.press_up = self.press_dic['up']
-                joystick_msg.press_down = self.press_dic['down']
-                joystick_msg.press_up_dowm = self.up_down_press
+                joystick_msg.press_left = self.press_dic['left']
+                joystick_msg.press_right = self.press_dic['right']
  
                 if hand_name=="right":
                     self.js_pub_r.publish(joystick_msg)

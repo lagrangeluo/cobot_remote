@@ -18,6 +18,7 @@ void survive_ros_node::init()
     nh.getParam("/vive/base_station_1", base_station_1);
     nh.getParam("/vive/base_station_2", base_station_2);
 
+    // 左手基坐标
     nh.getParam("/vive/base_x", base_x_l);
     nh.getParam("/vive/base_y", base_y_l);
     nh.getParam("/vive/base_z", base_z_l);
@@ -25,6 +26,7 @@ void survive_ros_node::init()
     nh.getParam("/vive/base_pitch", base_pitch_l);
     nh.getParam("/vive/base_yaw", base_yaw_l);
 
+    // 右手基坐标
     nh.getParam("/vive/base_x", base_x_r);
     nh.getParam("/vive/base_y", base_y_r);
     nh.getParam("/vive/base_z", base_z_r);
@@ -59,29 +61,29 @@ void survive_ros_node::init()
 }
 
 
-void survive_ros_node::joystick_callback(const survive_publisher::joystick::ConstPtr msg)
+void survive_ros_node::joystick_callback(const survive_publisher::umijoy::ConstPtr msg)
 {
     //如果长按两个按键，更新tracker基座标
-    if(msg->press_up_dowm == true){
+    if(msg->press_left == true){
         start_teleop_state = true;
     }
     else{
         start_teleop_state = false;
     }
 
-    //长按js按键，结束模式清除base xyz
-    if(msg->press_js == true)
-    {
-        ros::NodeHandle nh("~");
+    // //长按js按键，结束模式清除base xyz
+    // if(msg->press_js == true)
+    // {
+    //     ros::NodeHandle nh("~");
 
-        //重新获取base xyz
-        nh.getParam("/vive/base_x", base_x_l);
-        nh.getParam("/vive/base_y", base_y_l);
-        nh.getParam("/vive/base_z", base_z_l);
-        nh.getParam("/vive/base_x", base_x_r);
-        nh.getParam("/vive/base_y", base_y_r);
-        nh.getParam("/vive/base_z", base_z_r);
-    }
+    //     //重新获取base xyz
+    //     nh.getParam("/vive/base_x", base_x_l);
+    //     nh.getParam("/vive/base_y", base_y_l);
+    //     nh.getParam("/vive/base_z", base_z_l);
+    //     nh.getParam("/vive/base_x", base_x_r);
+    //     nh.getParam("/vive/base_y", base_y_r);
+    //     nh.getParam("/vive/base_z", base_z_r);
+    // }
 }
 
 void survive_ros_node::update_hand_frame()
@@ -92,8 +94,13 @@ void survive_ros_node::update_hand_frame()
     quaternion.setRPY(hand_roll,hand_pitch,hand_yaw);
     hand_to_tracker.setOrigin(tf::Vector3(hand_x, hand_y, hand_z));
     hand_to_tracker.setRotation(quaternion);
-    broadcaster.sendTransform(tf::StampedTransform(hand_to_tracker, ros::Time::now(), tracker_left, left_hand));
-    broadcaster.sendTransform(tf::StampedTransform(hand_to_tracker, ros::Time::now(), tracker_right, right_hand));
+
+    if(if_left_exist()){
+        broadcaster.sendTransform(tf::StampedTransform(hand_to_tracker, ros::Time::now(), tracker_left, left_hand));
+    }
+    if(if_right_exist()){
+        broadcaster.sendTransform(tf::StampedTransform(hand_to_tracker, ros::Time::now(), tracker_right, right_hand));
+    }
 
     if(start_teleop_state == true)
     {
@@ -249,7 +256,7 @@ bool survive_ros_node::if_left_exist()
 bool survive_ros_node::if_right_exist()
 {
     //
-    if(tracker_left=="")
+    if(tracker_right=="")
         return false;
     else
         return true;
