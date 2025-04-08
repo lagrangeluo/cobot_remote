@@ -1,0 +1,30 @@
+{
+  "elements": [
+    "fl_base_link",
+    "fl_joint1",
+    "fl_link1",
+    "fl_joint2",
+    "fl_link2",
+    "fl_joint3",
+    "fl_link3",
+    "fl_joint4",
+    "fl_link4",
+    "fl_joint5",
+    "fl_link5",
+    "fl_joint6",
+    "fl_link6"
+  ],
+  "urdf_file": "arx5_description_ik.urdf",
+  "active_links_mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "last_link_vector": null,
+  "name": "left_arm",
+  "version": "v1"
+}

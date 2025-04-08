@@ -13,6 +13,12 @@
     <!--机械臂接口适配模块-->
     <node name="rviz_sim_remote" type="rviz_sim_node" pkg="arm_adapter" output="screen" />
 
+    <!--机械臂仿真-->
+    <include file="$(find frcobot_description)/launch/fr5robot_rviz.launch"/>
+
+    <!--机械臂逆解模块-->
+    <node name="arm_ik" type="ik.py" pkg="arm_ik" output="screen" />
+
     <!--rviz-->
     <node name="remote_rviz" pkg="rviz" type="rviz" args="-d $(find remote_bringup)/rviz/vive.rviz" />
 </launch>

@@ -1,0 +1,23 @@
+<launch>
+  <arg
+    name="model" />
+  <param
+    name="robot_description"
+    textfile="$(find arm_ik)/urdf/arx5_description_ik.urdf" />
+    
+  <!--node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+      <rosparam param="source_list">[/puppet/joint_right]</rosparam>
+  </node-->
+
+  <param name="robot_description_semantic" textfile="$(find arm_ik)/urdf/arx5_description.srdf" />
+
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher" />
+  <node
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    args="-d $(find arm_ik)/rviz.rviz" />
+</launch>

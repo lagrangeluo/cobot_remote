@@ -1,0 +1,30 @@
+{
+  "elements": [
+    "base_link",
+    "j1",
+    "shoulder_Link",
+    "j2",
+    "upperarm_Link",
+    "j3",
+    "forearm_Link",
+    "j4",
+    "wrist1_Link",
+    "j5",
+    "wrist2_Link",
+    "j6",
+    "wrist3_Link"
+  ],
+  "urdf_file": "fr5_robot.urdf",
+  "active_links_mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "last_link_vector": null,
+  "name": "left_arm",
+  "version": "v1"
+}
