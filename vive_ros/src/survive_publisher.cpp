@@ -64,7 +64,7 @@ void survive_ros_node::init()
 void survive_ros_node::joystick_callback(const survive_publisher::umijoy::ConstPtr msg)
 {
     //如果长按两个按键，更新tracker基座标
-    if(msg->press_left == true){
+    if(msg->press_right == true){
         start_teleop_state = true;
     }
     else{

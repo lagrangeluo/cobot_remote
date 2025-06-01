@@ -21,6 +21,7 @@ class ik_caculator():
         rospy.loginfo("ik caculator init")
         self.joint_state = JointState()
         self.joint_state.name = ['j1', 'j2', 'j3', 'j4','j5' ,'j6']
+        self.pre_result = [0,0,0,0,0,0,0]
 
         # 创建 TF2 监听器和缓冲区
         self.tf_buffer = tf2_ros.Buffer()
@@ -209,9 +210,10 @@ class ik_caculator():
             target_orientation = target_pose["rotation"]
 
         # 执行逆解并发布消息
-        q = self.left_arm_chain.inverse_kinematics(target_position,target_orientation,'all')
+        q = self.left_arm_chain.inverse_kinematics(target_position,target_orientation,'all',initial_position = np.array(self.pre_result))        
         # 保留joint list小数点后三位小数
         q = [round(a,3) for a in q]
+        self.pre_result = q
         # 判断joint list里的数值是否为零,q[3]第三个关节角度是否为零，如果为零则逆解计算错误，返回
         if((all(x == 0 for x in q)) or q[3] == 0):
             return

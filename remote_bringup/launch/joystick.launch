@@ -1,6 +1,6 @@
 <launch>
 
-    <rosparam command="load" file="$(find remote_bringup)/config/umi.yaml" />
+    <!-- <rosparam command="load" file="$(find remote_bringup)/config/umi.yaml" /> -->
 
     <node name="rosserial_node" type="serial_node.py" pkg="rosserial_python" output="screen" respawn="true">
         <param name = "port" type="string" value="/dev/ttyACM0" />
