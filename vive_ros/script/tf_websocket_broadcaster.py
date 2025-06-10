@@ -16,7 +16,26 @@ WEBSOCKET_PORT = 8765
 
 clients = set()
 arm_publisher = rospy.Publisher('/pin_pos_cmd', PosCmd, queue_size=10)
+joint_dict={
+    "joint0": 0,
+    "joint1": 0,
+    "joint2": 0,
+    "joint3": 0,
+    "joint4": 0,
+    "joint5": 0
+}
 
+def joint_state_callback(msg):
+    global joint_dict
+    
+    joint_dict={
+        "joint0": round(msg.position[0],2),
+        "joint1": round(msg.position[1],2),
+        "joint2": round(msg.position[2],2),
+        "joint3": round(msg.position[3],2),
+        "joint4": round(msg.position[4],2),
+        "joint5": round(msg.position[5],2)
+    }
 
 
 def transform_to_dict(trans, rot):
@@ -40,11 +59,12 @@ async def broadcast_loop():
             # listener.waitForTransform(*TF_FRAME_2, rospy.Time(0), rospy.Duration(1.0))
             # trans2, rot2 = listener.lookupTransform(*TF_FRAME_2, rospy.Time(0))
             robot_dict = transform_to_dict(trans1, rot1)
-            print(f"robot dict: {robot_dict}")
+            #print(f"robot dict: {robot_dict}")
 
             # json打包并通过ws发送
             data = json.dumps({
                 "robot1": robot_dict,
+                "joint": joint_dict,
                 # "robot2": transform_to_dict(trans2, rot2)
             })
 
@@ -74,7 +94,9 @@ async def handler(websocket, path):
         clients.remove(websocket)
 
 async def main():
+    # ros组件
     rospy.init_node("tf_websocket_broadcaster", anonymous=True)
+    joint_sub = rospy.Subscriber("/joint_states", JointState, joint_state_callback)
 
     shutdown_event = asyncio.Event()
 

@@ -133,6 +133,9 @@ void survive_ros_node::update_hand_frame()
                     // 创建 stand 到 base 的变换
                     stand_to_base_trans.setOrigin(tf::Vector3(- base_x_l, - base_y_l, - base_z_l)); // 使用 base 相对于 hand 的 x, y, z 位置
                     stand_to_base_trans.setRotation(tf::Quaternion(0, 0, 0, 1)); // 如果有旋转，设置相应的旋转四元数
+                    // tf::Quaternion quaternion_base_q;
+                    // quaternion_base_q.setRPY(base_roll_l,base_pitch_l,base_yaw_l);
+                    // stand_to_base_trans.setRotation(quaternion_base_q); // 如果有旋转，设置相应的旋转四元数
 
                     // world到base
                     tf::Transform world_to_base_trans = world_to_stand_trans * stand_to_base_trans;
@@ -176,6 +179,10 @@ void survive_ros_node::update_hand_frame()
                     // 创建 stand 到 base 的变换
                     stand_to_base_trans.setOrigin(tf::Vector3(- base_x_r, - base_y_r, - base_z_r)); // 使用 base 相对于 hand 的 x, y, z 位置
                     stand_to_base_trans.setRotation(tf::Quaternion(0, 0, 0, 1)); // 如果有旋转，设置相应的旋转四元数
+                    // tf::Quaternion quaternion_base_q;
+                    // quaternion_base_q.setRPY(base_roll_r,base_pitch_r,base_yaw_r);
+                    // stand_to_base_trans.setRotation(quaternion_base_q); // 如果有旋转，设置相应的旋转四元数
+
 
                     // world到base
                     tf::Transform world_to_base_trans = world_to_stand_trans * stand_to_base_trans;
@@ -187,6 +194,12 @@ void survive_ros_node::update_hand_frame()
                     tracker_static_right.transform.rotation.y = world_to_base_trans.getRotation().y();
                     tracker_static_right.transform.rotation.z = world_to_base_trans.getRotation().z();
                     tracker_static_right.transform.rotation.w = world_to_base_trans.getRotation().w();
+
+                    std::cout << "Tracker Orientation" << std::endl;
+                    std::cout << "x: " << world_to_base_trans.getRotation().x() << std::endl;
+                    std::cout << "y: " << world_to_base_trans.getRotation().y() << std::endl;
+                    std::cout << "z: " << world_to_base_trans.getRotation().z() << std::endl;
+                    std::cout << "w: " << world_to_base_trans.getRotation().w() << std::endl;
                 }
                 catch(tf::TransformException &ex){
                     ROS_ERROR("%s", ex.what());
